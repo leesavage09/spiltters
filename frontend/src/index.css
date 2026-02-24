@@ -44,3 +44,108 @@ h1 {
 .health-status strong {
   color: #4caf50;
 }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  margin-bottom: 0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-info span {
+  color: #666;
+}
+
+.btn-logout {
+  padding: 0.5rem 1rem;
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.btn-logout:hover {
+  background-color: #b71c1c;
+}
+
+.auth-form {
+  max-width: 400px;
+  margin-top: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+.form-error {
+  color: #d32f2f;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #1565c0;
+}
+
+.btn-primary:disabled {
+  background-color: #90caf9;
+  cursor: not-allowed;
+}
+
+.auth-link {
+  margin-top: 1rem;
+  color: #666;
+}
+
+.auth-link a {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.auth-link a:hover {
+  text-decoration: underline;
+}
