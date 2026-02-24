@@ -3,9 +3,9 @@ services:
     image: postgres:16-alpine
     container_name: splitters-db
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: splitters
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
@@ -19,7 +19,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: postgresql://user:password@postgres:5432/splitters?schema=public
+      DATABASE_URL: ${DATABASE_URL}
     depends_on:
       - postgres
     command: sh -c "node dist/main.js"
