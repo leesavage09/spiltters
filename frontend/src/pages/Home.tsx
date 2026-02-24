@@ -8,41 +8,58 @@ const Home: FC = () => {
   const { mutate: logoutMutate } = useLogout();
 
   if (isLoading) {
-    return <div className="container">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="animate-pulse text-slate-400 text-lg">Loading...</div>
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div className="container error">
-        Error: {error instanceof Error ? error.message : "Unknown error"}
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="text-red-400 text-lg">
+          Error: {error instanceof Error ? error.message : "Unknown error"}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container">
-      <div className="header">
-        <h1>Splitters</h1>
-        {user ? (
-          <div className="user-info">
-            <span>{user.email}</span>
-            <button
-              className="btn-logout"
-              onClick={() => {
-                logoutMutate();
-              }}
-              type="button"
-            >
-              Logout
-            </button>
+    <div className="min-h-screen bg-slate-950 text-white">
+      <header className="border-b border-slate-800">
+        <div className="mx-auto max-w-5xl flex items-center justify-between px-6 py-4">
+          <h1 className="text-2xl font-bold tracking-tight">Splitters</h1>
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-slate-400">{user.email}</span>
+              <button
+                className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-700"
+                onClick={() => {
+                  logoutMutate();
+                }}
+                type="button"
+              >
+                Logout
+              </button>
+            </div>
+          ) : null}
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-5xl px-6 py-10">
+        <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
+          <div className="flex items-center gap-3">
+            <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+            <p className="text-sm text-slate-300">
+              Backend Status:{" "}
+              <span className="font-semibold text-emerald-400">
+                {data?.status}
+              </span>
+            </p>
           </div>
-        ) : null}
-      </div>
-      <div className="health-status">
-        <p>
-          Backend Status: <strong>{data?.status}</strong>
-        </p>
-      </div>
+        </div>
+      </main>
     </div>
   );
 };
