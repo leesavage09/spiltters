@@ -6,7 +6,7 @@ import { HealthModule } from './health/health.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
+      rootPath: join(__dirname, 'public'),
     }),
     HealthModule,
   ],

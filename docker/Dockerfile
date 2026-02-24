@@ -29,11 +29,8 @@ COPY --from=backend-build /app/backend/dist ./dist
 COPY --from=backend-build /app/backend/prisma ./prisma
 COPY backend/.env ./
 
-# Copy built frontend
-COPY --from=frontend-build /app/frontend/dist ../frontend/dist
-
-# Create symlink for static files
-RUN ln -s ../frontend/dist ./dist/public
+# Copy built frontend into backend dist/public
+COPY --from=frontend-build /app/frontend/dist ./dist/public
 
 WORKDIR /app/backend
 EXPOSE 3000
