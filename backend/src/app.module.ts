@@ -11,5 +11,4 @@ import { HealthModule } from './health/health.module';
     HealthModule,
   ],
 })
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class AppModule {}
