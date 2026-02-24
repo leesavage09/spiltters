@@ -2,6 +2,9 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: splitters-db
+    restart: unless-stopped
+    networks:
+      - traefik-network
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -12,10 +15,18 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   app:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-    container_name: splitters-app
+    image: leesavage09/splitters
+    container_name: splitters
+    restart: unless-stopped
+    networks:
+      - traefik-network
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.payload.rule=Host(`splitters.exp.leesavage.co.uk`)'
+      - 'traefik.http.routers.payload.entrypoints=websecure'
+      - 'traefik.http.routers.payload.tls=true'
+      - 'traefik.http.routers.payload.tls.certresolver=le'
+      - 'traefik.http.services.payload.loadbalancer.server.port=3000'
     ports:
       - "3000:3000"
     environment:
@@ -26,3 +37,7 @@ services:
 
 volumes:
   postgres_data:
+
+  networks:
+  traefik-network:
+    external: true
