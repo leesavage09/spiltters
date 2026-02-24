@@ -27,7 +27,6 @@ RUN npm install --production --legacy-peer-deps
 # Copy built backend
 COPY --from=backend-build /app/backend/dist ./dist
 COPY --from=backend-build /app/backend/prisma ./prisma
-COPY backend/.env ./
 
 # Copy built frontend into backend dist/public
 COPY --from=frontend-build /app/frontend/dist ./dist/public
