@@ -39,6 +39,8 @@ WORKDIR /app
 COPY --from=runtime-deps /app/node_modules ./node_modules
 COPY --from=backend-build /app/backend/dist ./dist
 COPY --from=frontend-build /app/frontend/dist ./dist/src/public
+COPY --from=runtime-deps /app/prisma ./prisma
+COPY --from=backend-build /app/backend/prisma.config.ts ./prisma.config.ts
 
 EXPOSE 3000
 CMD ["node", "dist/src/main.js"]
