@@ -22,11 +22,11 @@ services:
       - traefik-network
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.payload.rule=Host(`splitters.exp.leesavage.co.uk`)'
-      - 'traefik.http.routers.payload.entrypoints=websecure'
-      - 'traefik.http.routers.payload.tls=true'
-      - 'traefik.http.routers.payload.tls.certresolver=le'
-      - 'traefik.http.services.payload.loadbalancer.server.port=3000'
+      - 'traefik.http.routers.splitters.rule=Host(`splitters.exp.leesavage.co.uk`)'
+      - 'traefik.http.routers.splitters.entrypoints=websecure'
+      - 'traefik.http.routers.splitters.tls=true'
+      - 'traefik.http.routers.splitters.tls.certresolver=le'
+      - 'traefik.http.services.splitters.loadbalancer.server.port=3000'
     ports:
       - "3000:3000"
     environment:
