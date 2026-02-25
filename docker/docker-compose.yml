@@ -38,7 +38,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    command: sh -c "node dist/src/main.js"
+    command: sh -c "npx prisma migrate deploy --schema=./prisma/schema.prisma && node dist/src/main.js"
 
 volumes:
   splitters_postgres_data:
