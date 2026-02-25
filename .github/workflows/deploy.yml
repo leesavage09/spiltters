@@ -21,7 +21,9 @@ jobs:
       - name: Build and push Docker image
         run: |
           IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/splitters:latest
-          docker build -f docker/Dockerfile -t $IMAGE_NAME .
+          docker build \
+            --secret id=DATABASE_URL,env=DATABASE_URL \
+            -f docker/Dockerfile -t $IMAGE_NAME .
           docker push $IMAGE_NAME
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
