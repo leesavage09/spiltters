@@ -31,9 +31,11 @@ services:
       - "3000:3000"
     environment:
       DATABASE_URL: ${DATABASE_URL}
+      VITE_API_URL: ${VITE_API_URL}
+      JWT_SECRET: ${JWT_SECRET}
     depends_on:
       - postgres
-    command: sh -c "node dist/main.js"
+    command: sh -c "node dist/src/main.js"
 
 volumes:
   postgres_data:
