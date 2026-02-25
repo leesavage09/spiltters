@@ -19,9 +19,7 @@ RUN npm install
 # Backend build
 FROM backend-deps AS backend-build
 COPY backend/ .
-RUN --mount=type=secret,id=DATABASE_URL \
-    DATABASE_URL=$(cat /run/secrets/DATABASE_URL) \
-    npx prisma generate
+RUN npx prisma generate
 RUN npm run build
 
 FROM node:22-alpine AS runtime-deps
@@ -29,9 +27,7 @@ WORKDIR /app
 COPY backend/package*.json ./
 COPY backend/prisma ./prisma
 RUN npm ci --omit=dev
-RUN --mount=type=secret,id=DATABASE_URL \
-    DATABASE_URL=$(cat /run/secrets/DATABASE_URL) \
-    npx prisma generate
+RUN npx prisma generate
 
 FROM node:22-alpine AS runtime
 WORKDIR /app
