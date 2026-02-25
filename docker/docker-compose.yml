@@ -38,6 +38,6 @@ services:
 volumes:
   postgres_data:
 
-  networks:
+networks:
   traefik-network:
     external: true
