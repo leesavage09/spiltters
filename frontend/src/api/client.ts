@@ -1,11 +1,7 @@
 import axios from "axios";
 
 const getApiUrl = (): string => {
-  const url = import.meta.env.VITE_API_URL as string | undefined;
-  if (typeof url !== "string")
-    throw Error("VITE_API_URL environment variable is not set");
-
-  return url;
+  return import.meta.env.PROD ? "/api" : "http://localhost:3000/api";
 };
 
 const apiClient = axios.create({
