@@ -14,6 +14,11 @@ import Joi from 'joi';
       isGlobal: true,
       validationSchema: Joi.object({
         JWT_SECRET: Joi.string().required(),
+        DATABASE_URL: Joi.string().required(),
+        POSTGRES_USER: Joi.string().required(),
+        POSTGRES_PASSWORD: Joi.string().required(),
+        POSTGRES_DB: Joi.string().required(),
+        CORS_ORIGINS: Joi.string().required(),
       }),
     }),
     ServeStaticModule.forRoot({

@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import { PrismaClientExceptionFilter } from 'nestjs-prisma';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -26,17 +27,14 @@ async function bootstrap(): Promise<void> {
     new PrismaClientExceptionFilter(httpAdapterHost.httpAdapter),
   );
 
-  //TODO we need to make sure that localhost is not included in production code
-  const corsOrigins: string[] = [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:5173',
-    'capacitor://localhost',
-  ];
+  const origin: string[] = app
+    .get(ConfigService)
+    .getOrThrow<string>('CORS_ORIGINS')
+    .split(',')
+    .map((o: string) => o.trim());
 
   app.enableCors({
-    origin: corsOrigins,
+    origin,
     credentials: true,
   });
 
