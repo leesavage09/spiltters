@@ -23,13 +23,6 @@ jobs:
           IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/splitters:latest
           docker build -f docker/Dockerfile -t $IMAGE_NAME .
           docker push $IMAGE_NAME
-        env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
       - name: Prepare remote directory
         uses: appleboy/ssh-action@v0.1.6
         with:
@@ -65,6 +58,7 @@ jobs:
             POSTGRES_USER=${{ secrets.POSTGRES_USER }}
             POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
             POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+            CORS_ORIGINS=${{ secrets.CORS_ORIGINS }}
             EOF
             # --- run Docker Compose with .env file ---          
             docker-compose pull
