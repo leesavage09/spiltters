@@ -9,7 +9,6 @@ FROM backend-deps AS backend-build
 COPY backend/ .
 RUN npx prisma generate
 RUN npm run build
-RUN npm run generate:openapi
 
 # Frontend deps
 FROM node:22-alpine AS frontend-deps
@@ -21,7 +20,6 @@ RUN npm install
 FROM frontend-deps AS frontend-build
 COPY frontend/ .
 COPY --from=backend-build /app/backend/openapi.json ../backend/openapi.json
-RUN npx orval
 RUN npm run build
 
 FROM node:22-alpine AS runtime-deps

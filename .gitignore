@@ -12,5 +12,3 @@ build/
 .DS_Store
 frontend/dist
 backend/dist
-backend/openapi.json
-frontend/src/generated/
