@@ -1,11 +1,22 @@
 import type { FC } from "react";
+import { useState } from "react";
 import { useCurrentUser, useLogout } from "../hooks/useAuth";
 import { useHealth } from "../hooks/useHealth";
+import { useSplits } from "../hooks/useSplits";
+import CreateSplitModal from "../components/CreateSplitModal";
+
+//TODO Unsafe member access .name on a type that cannot be resolved
 
 const Home: FC = () => {
   const { data, isLoading, error } = useHealth();
   const { data: user } = useCurrentUser();
   const { mutate: logoutMutate } = useLogout();
+  const {
+    data: splits,
+    isLoading: splitsLoading,
+    error: splitsError,
+  } = useSplits();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -47,7 +58,7 @@ const Home: FC = () => {
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-6 py-10">
+      <main className="mx-auto max-w-5xl px-6 py-10 space-y-6">
         <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
           <div className="flex items-center gap-3">
             <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
@@ -59,7 +70,53 @@ const Home: FC = () => {
             </p>
           </div>
         </div>
+
+        <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
+          <h2 className="text-lg font-semibold mb-4">Your Splits</h2>
+
+          {splitsLoading ? (
+            <div className="animate-pulse text-slate-400 text-sm">
+              Loading splits...
+            </div>
+          ) : splitsError ? (
+            <div className="text-red-400 text-sm">Failed to load splits</div>
+          ) : splits && splits.length > 0 ? (
+            <ul className="space-y-2">
+              {splits.map((split) => (
+                <li
+                  key={split.id}
+                  className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-950 px-4 py-3"
+                >
+                  <span className="text-xl">{split.emoji}</span>
+                  <span className="text-sm font-medium text-slate-200">
+                    {split.name}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-slate-400 text-sm mb-4">No splits yet</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsModalOpen(true);
+                }}
+                className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-500"
+              >
+                Create new split
+              </button>
+            </div>
+          )}
+        </div>
       </main>
+
+      <CreateSplitModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
+      />
     </div>
   );
 };
