@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: splitters-db
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - splitters_postgres_data:/var/lib/postgresql/data
+
+
+volumes:
+  splitters_postgres_data:

@@ -14,7 +14,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,apps,libs}/**/*.ts\" --fix",
     "typecheck": "tsc --noEmit",
     "generate:openapi": "nest build && JWT_SECRET=dummy DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy node dist/src/scripts/generate-openapi.js"

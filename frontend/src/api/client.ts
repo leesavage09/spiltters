@@ -2,7 +2,7 @@ import type { AxiosRequestConfig } from "axios";
 import axios from "axios";
 
 const getApiUrl = (): string => {
-  return import.meta.env.PROD ? "/api" : "http://localhost:3000/api";
+  return import.meta.env.PROD ? "" : "http://localhost:3000";
 };
 
 const apiClient = axios.create({
