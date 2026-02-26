@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchHealth } from "../api/health";
+import type { HealthResponseDto } from "../generated/api.schemas";
+import { getHealth } from "../generated/health/health";
 
-interface HealthResponse {
-  status: string;
-}
+const { healthControllerGetHealth } = getHealth();
 
 export const useHealth = () => {
-  return useQuery<HealthResponse>({
+  return useQuery<HealthResponseDto>({
     queryKey: ["health"],
-    queryFn: fetchHealth,
+    queryFn: healthControllerGetHealth,
   });
 };

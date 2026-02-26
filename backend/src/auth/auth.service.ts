@@ -5,15 +5,11 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import type { AuthResponseDto } from './dto/auth-response.dto';
 import { UsersService } from '../users/users.service';
 
 interface JwtPayload {
   sub: string;
-  email: string;
-}
-
-interface AuthResponse {
-  id: string;
   email: string;
 }
 
@@ -26,7 +22,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(email: string, password: string): Promise<AuthResponse> {
+  async register(email: string, password: string): Promise<AuthResponseDto> {
     const existingUser = await this.usersService.findByEmail(email);
     if (existingUser) {
       throw new ConflictException('Email already registered');
@@ -38,7 +34,7 @@ export class AuthService {
     return { id: user.id, email: user.email };
   }
 
-  async validateUser(email: string, password: string): Promise<AuthResponse> {
+  async validateUser(email: string, password: string): Promise<AuthResponseDto> {
     const user = await this.usersService.findByEmail(email);
 
     if (!user) {

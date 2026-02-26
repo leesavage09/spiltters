@@ -1,25 +1,27 @@
-# Frontend deps
-FROM node:22-alpine AS frontend-deps
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm install
-
-# Frontend build
-FROM frontend-deps AS frontend-build
-COPY frontend/ .
-RUN npm run build
-
-
 # Backend deps
 FROM node:22-alpine AS backend-deps
 WORKDIR /app/backend
 COPY backend/package*.json ./
 RUN npm install
 
-# Backend build
+# Backend build + OpenAPI spec generation
 FROM backend-deps AS backend-build
 COPY backend/ .
 RUN npx prisma generate
+RUN npm run build
+RUN JWT_SECRET=dummy DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy node dist/src/scripts/generate-openapi.js
+
+# Frontend deps
+FROM node:22-alpine AS frontend-deps
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm install
+
+# Frontend build (needs OpenAPI spec from backend)
+FROM frontend-deps AS frontend-build
+COPY frontend/ .
+COPY --from=backend-build /app/backend/openapi.json ../backend/openapi.json
+RUN npx orval
 RUN npm run build
 
 FROM node:22-alpine AS runtime-deps

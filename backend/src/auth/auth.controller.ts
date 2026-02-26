@@ -9,31 +9,28 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import express from 'express';
 import { AuthService } from './auth.service';
+import { AuthResponseDto } from './dto/auth-response.dto';
 import { LoginDto } from './dto/login.dto';
+import { MessageResponseDto } from './dto/message-response.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import type { AuthenticatedUser } from './strategies/jwt.strategy';
 
-interface AuthResponse {
-  id: string;
-  email: string;
-}
-
-interface MessageResponse {
-  message: string;
-}
-
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @ApiOperation({ summary: 'Register a new user' })
+  @ApiBody({ type: RegisterDto })
+  @ApiResponse({ status: 201, type: AuthResponseDto })
   async register(
     @Body() dto: RegisterDto,
     @Res({ passthrough: true }) res: express.Response,
-  ): Promise<AuthResponse> {
+  ): Promise<AuthResponseDto> {
     const user = await this.authService.register(dto.email, dto.password);
     const token = this.authService.generateToken(user.id, user.email);
 
@@ -44,10 +41,13 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Login with credentials' })
+  @ApiBody({ type: LoginDto })
+  @ApiResponse({ status: 200, type: AuthResponseDto })
   async login(
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: express.Response,
-  ): Promise<AuthResponse> {
+  ): Promise<AuthResponseDto> {
     const user = await this.authService.validateUser(dto.email, dto.password);
     const token = this.authService.generateToken(user.id, user.email);
 
@@ -58,7 +58,11 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  logout(@Res({ passthrough: true }) res: express.Response): MessageResponse {
+  @ApiOperation({ summary: 'Logout current user' })
+  @ApiResponse({ status: 200, type: MessageResponseDto })
+  logout(
+    @Res({ passthrough: true }) res: express.Response,
+  ): MessageResponseDto {
     res.clearCookie('access_token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -71,12 +75,14 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get current authenticated user' })
+  @ApiResponse({ status: 200, type: AuthResponseDto })
   getProfile(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     @Req() req: any,
-  ): AuthenticatedUser {
+  ): AuthResponseDto {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    return req.user as AuthenticatedUser;
+    return req.user as AuthResponseDto;
   }
 
   private setTokenCookie(res: express.Response, token: string): void {

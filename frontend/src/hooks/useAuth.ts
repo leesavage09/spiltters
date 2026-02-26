@@ -1,11 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { fetchCurrentUser, login, logout, register } from "../api/auth";
+import type { AuthResponseDto } from "../generated/api.schemas";
+import { getAuth } from "../generated/auth/auth";
 
-interface AuthResponse {
-  id: string;
-  email: string;
-}
+const { authControllerLogin, authControllerRegister, authControllerLogout, authControllerGetProfile } = getAuth();
 
 interface ErrorResponse {
   message: string;
@@ -13,9 +11,9 @@ interface ErrorResponse {
 }
 
 export const useCurrentUser = () => {
-  return useQuery<AuthResponse>({
+  return useQuery<AuthResponseDto>({
     queryKey: ["auth", "me"],
-    queryFn: fetchCurrentUser,
+    queryFn: authControllerGetProfile,
     retry: false,
     staleTime: 5 * 60 * 1000,
   });
@@ -25,11 +23,11 @@ export const useLogin = () => {
   const queryClient = useQueryClient();
 
   return useMutation<
-    AuthResponse,
+    AuthResponseDto,
     AxiosError<ErrorResponse>,
     { email: string; password: string }
   >({
-    mutationFn: login,
+    mutationFn: authControllerLogin,
     onSuccess: (data) => {
       queryClient.setQueryData(["auth", "me"], data);
     },
@@ -40,11 +38,11 @@ export const useRegister = () => {
   const queryClient = useQueryClient();
 
   return useMutation<
-    AuthResponse,
+    AuthResponseDto,
     AxiosError<ErrorResponse>,
     { email: string; password: string }
   >({
-    mutationFn: register,
+    mutationFn: authControllerRegister,
     onSuccess: (data) => {
       queryClient.setQueryData(["auth", "me"], data);
     },
@@ -55,7 +53,7 @@ export const useLogout = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: logout,
+    mutationFn: authControllerLogout,
     onSuccess: () => {
       queryClient.setQueryData(["auth", "me"], null);
       queryClient.invalidateQueries({ queryKey: ["auth"] }).catch(() => {});

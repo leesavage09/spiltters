@@ -1,3 +1,4 @@
+import type { AxiosRequestConfig } from "axios";
 import axios from "axios";
 
 const getApiUrl = (): string => {
@@ -24,3 +25,7 @@ apiClient.interceptors.response.use(
 );
 
 export default apiClient;
+
+export const customInstance = <T>(config: AxiosRequestConfig): Promise<T> => {
+  return apiClient(config).then((response) => response.data as T);
+};
