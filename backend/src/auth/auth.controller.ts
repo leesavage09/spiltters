@@ -17,6 +17,7 @@ import { LoginDto } from './dto/login.dto';
 import { MessageResponseDto } from './dto/message-response.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from './interfaces/authenticated-request.interface';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -77,12 +78,8 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get current authenticated user' })
   @ApiResponse({ status: 200, type: AuthResponseDto })
-  getProfile(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    @Req() req: any,
-  ): AuthResponseDto {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    return req.user as AuthResponseDto;
+  getProfile(@Req() req: AuthenticatedRequest): AuthResponseDto {
+    return req.user;
   }
 
   private setTokenCookie(res: express.Response, token: string): void {
