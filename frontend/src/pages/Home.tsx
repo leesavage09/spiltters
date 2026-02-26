@@ -95,19 +95,19 @@ const Home: FC = () => {
               ))}
             </ul>
           ) : (
-            <div className="text-center py-8">
-              <p className="text-slate-400 text-sm mb-4">No splits yet</p>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsModalOpen(true);
-                }}
-                className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-500"
-              >
-                Create new split
-              </button>
-            </div>
+            <p className="text-slate-400 text-sm mb-4">No splits yet</p>
           )}
+          <div className="text-center py-8">
+            <button
+              type="button"
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+              className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-500"
+            >
+              Create new split
+            </button>
+          </div>
         </div>
       </main>
 
