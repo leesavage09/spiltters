@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { SplitResponseDto } from './dto/split-response.dto';
 
-//TODO Unsafe assignment of an error typed value, need to fix that
-
 @Injectable()
 export class SplitsService {
   constructor(private readonly prisma: PrismaService) {}

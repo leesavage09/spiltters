@@ -34,7 +34,10 @@ export class AuthService {
     return { id: user.id, email: user.email };
   }
 
-  async validateUser(email: string, password: string): Promise<AuthResponseDto> {
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<AuthResponseDto> {
     const user = await this.usersService.findByEmail(email);
 
     if (!user) {
