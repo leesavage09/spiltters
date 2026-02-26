@@ -62,13 +62,13 @@ cd backend && npx prisma migrate deploy # Run migrations (prod)
 
 All endpoints prefixed with `/api`.
 
-| Method | Path | Auth | Purpose |
-|--------|------|------|---------|
-| POST | /api/auth/register | No | Create account |
-| POST | /api/auth/login | No | Login |
-| GET | /api/auth/me | Yes | Current user |
-| POST | /api/auth/logout | Yes | Clear cookie |
-| GET | /api/health | No | Health check |
+| Method | Path               | Auth | Purpose        |
+| ------ | ------------------ | ---- | -------------- |
+| POST   | /api/auth/register | No   | Create account |
+| POST   | /api/auth/login    | No   | Login          |
+| GET    | /api/auth/me       | Yes  | Current user   |
+| POST   | /api/auth/logout   | Yes  | Clear cookie   |
+| GET    | /api/health        | No   | Health check   |
 
 ## Architecture Patterns
 
@@ -107,9 +107,8 @@ No test framework currently configured (scaffold was removed).
 
 ## AI Guidelines
 
-- **Question the premise before engineering around it.** If a requirement leads to solutions that compromise production code quality (bypassing validation, mocking env vars in production code, adding workarounds), push back on the requirement itself. The build step existing for a reason is a valid answer.
-- **Don't degrade production code to improve DX.** Environment variables must remain type-checked and validated. Never weaken runtime safety (e.g. `??=` fallbacks, `abortOnError: false`) to make a script work without its dependencies.
-- **Recognise when "no change" is the right answer.** Sometimes the existing approach (e.g. requiring a build before generating OpenAPI) is correct and the right response is to say so, not to keep engineering around it.
+- **Question the premise before engineering around it.** If a requirement leads to solutions that compromise production code quality (bypassing validation, mocking env vars in production code, adding workarounds), push back on the requirement itself.
+- **Don't degrade production code to meet a requirement.** question the requirements, perhaps a compromise will work.
 
 ## Deployment
 
