@@ -9,7 +9,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "build": "nest build && node dist/src/scripts/generate-openapi.js",
+    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",

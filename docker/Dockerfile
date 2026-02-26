@@ -9,6 +9,7 @@ FROM backend-deps AS backend-build
 COPY backend/ .
 RUN npx prisma generate
 RUN npm run build
+RUN npm run generate:openapi
 
 # Frontend deps
 FROM node:22-alpine AS frontend-deps
