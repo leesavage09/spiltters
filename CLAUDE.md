@@ -105,6 +105,12 @@ model User {
 
 No test framework currently configured (scaffold was removed).
 
+## AI Guidelines
+
+- **Question the premise before engineering around it.** If a requirement leads to solutions that compromise production code quality (bypassing validation, mocking env vars in production code, adding workarounds), push back on the requirement itself. The build step existing for a reason is a valid answer.
+- **Don't degrade production code to improve DX.** Environment variables must remain type-checked and validated. Never weaken runtime safety (e.g. `??=` fallbacks, `abortOnError: false`) to make a script work without its dependencies.
+- **Recognise when "no change" is the right answer.** Sometimes the existing approach (e.g. requiring a build before generating OpenAPI) is correct and the right response is to say so, not to keep engineering around it.
+
 ## Deployment
 
 GitHub Actions on push to master → Docker build → Docker Hub → SSH deploy to server with Traefik SSL termination at `splitters.exp.leesavage.co.uk`.
