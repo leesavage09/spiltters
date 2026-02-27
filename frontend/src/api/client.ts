@@ -3,12 +3,12 @@ import axios from "axios";
 import { Platform } from "react-native";
 import { navigate } from "../navigation/navigationRef";
 
+const PRODUCTION_URL = "https://splitters.exp.leesavage.co.uk";
+
 const getApiUrl = (): string => {
-  if (__DEV__) {
-    if (Platform.OS === "android") return "http://10.0.2.2:3000";
-    return "http://localhost:3000";
-  }
-  return "";
+  if (__DEV__ && Platform.OS === "web") return "http://localhost:3000";
+  if (Platform.OS === "web") return "";
+  return PRODUCTION_URL;
 };
 
 const apiClient = axios.create({
