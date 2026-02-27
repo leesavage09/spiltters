@@ -12,15 +12,16 @@ RUN npm run build
 
 # Frontend deps
 FROM node:22-alpine AS frontend-deps
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
+WORKDIR /app/ReactNative
+COPY ReactNative/package*.json ./
 RUN npm install
 
 # Frontend build
 FROM frontend-deps AS frontend-build
-COPY frontend/ .
+COPY ReactNative/ .
 COPY --from=backend-build /app/backend/openapi.json ../backend/openapi.json
-RUN npm run build
+RUN npx orval
+RUN npx expo export --platform web
 
 FROM node:22-alpine AS runtime-deps
 WORKDIR /app
@@ -34,7 +35,7 @@ WORKDIR /app
 
 COPY --from=runtime-deps /app/node_modules ./node_modules
 COPY --from=backend-build /app/backend/dist ./dist
-COPY --from=frontend-build /app/frontend/dist ./dist/src/public
+COPY --from=frontend-build /app/ReactNative/dist ./dist/src/public
 COPY --from=runtime-deps /app/prisma ./prisma
 COPY --from=backend-build /app/backend/prisma.config.ts ./prisma.config.ts
 

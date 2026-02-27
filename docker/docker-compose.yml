@@ -19,6 +19,8 @@ services:
     image: leesavage09/splitters
     container_name: splitters
     restart: unless-stopped
+    # ports:
+    #   - "3000:3000"
     networks:
       - backend
       - traefik-network
