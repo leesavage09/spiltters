@@ -11,9 +11,11 @@ import { useHealth } from "../hooks/useHealth";
 import CreateSplitModal from "../components/CreateSplitModal";
 import { colors } from "../theme/theme";
 import type { SplitResponseDto } from "../generated/api.schemas";
+import { getApiUrl } from "@/api/client";
 
 const HomeScreen: React.FC = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { data: user } = useCurrentUser();
   const { data: splits, isLoading: splitsLoading } = useSplits();
   const { data: health } = useHealth();
@@ -45,7 +47,11 @@ const HomeScreen: React.FC = () => {
       <Appbar.Header style={styles.header}>
         <Appbar.Content title="Splitters" titleStyle={styles.headerTitle} />
         <Text style={styles.userEmail}>{user?.email}</Text>
-        <Appbar.Action icon="logout" onPress={handleLogout} iconColor={colors.slate400} />
+        <Appbar.Action
+          icon="logout"
+          onPress={handleLogout}
+          iconColor={colors.slate400}
+        />
       </Appbar.Header>
 
       <View style={styles.content}>
@@ -53,11 +59,17 @@ const HomeScreen: React.FC = () => {
           <View
             style={[
               styles.healthDot,
-              { backgroundColor: health?.status === "ok" ? colors.emerald600 : colors.red500 },
+              {
+                backgroundColor:
+                  health?.status === "ok" ? colors.emerald600 : colors.red500,
+              },
             ]}
           />
           <Text style={styles.healthText}>
-            {health?.status === "ok" ? "Backend connected" : "Backend unavailable"}
+            {health?.status === "ok"
+              ? "Backend connected " +
+                (getApiUrl() === "" ? "(locally)" : getApiUrl())
+              : "Backend unavailable " + getApiUrl()}
           </Text>
         </View>
 
