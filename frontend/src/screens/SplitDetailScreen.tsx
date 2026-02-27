@@ -8,9 +8,11 @@ import type { RouteProp } from "@react-navigation/native";
 import type { RootStackParamList } from "../navigation/navigationRef";
 import { useDeleteSplit, useSplits } from "../hooks/useSplits";
 import { colors } from "../theme/theme";
+import { Fab } from "@/components/ui/fab/fab";
 
 const SplitDetailScreen: React.FC = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, "SplitDetail">>();
   const { data: splits, isLoading } = useSplits();
   const deleteSplit = useDeleteSplit();
@@ -28,7 +30,10 @@ const SplitDetailScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
       <Appbar.Header style={styles.header}>
-        <Appbar.BackAction onPress={() => navigation.goBack()} iconColor={colors.white} />
+        <Appbar.BackAction
+          onPress={() => navigation.goBack()}
+          iconColor={colors.white}
+        />
         <Appbar.Content
           title={`${split.emoji} ${split.name}`}
           titleStyle={styles.headerTitle}
@@ -59,7 +64,9 @@ const SplitDetailScreen: React.FC = () => {
               deleteSplit.mutate(split.id, {
                 onSuccess: () => navigation.replace("Home"),
                 onError: (error) => {
-                  setSnackbarMessage(error.response?.data?.message ?? "Failed to delete split");
+                  setSnackbarMessage(
+                    error.response?.data?.message ?? "Failed to delete split",
+                  );
                 },
               });
             }}
@@ -73,12 +80,10 @@ const SplitDetailScreen: React.FC = () => {
         <Text style={styles.placeholder}>Split details coming soon...</Text>
       </View>
 
-      <FAB
+      <Fab
         icon="plus"
         label="Add Expense"
         onPress={() => console.log("Add expense to split:", split.id)}
-        style={styles.fab}
-        color={colors.white}
       />
       <Snackbar
         visible={!!snackbarMessage}
@@ -128,12 +133,6 @@ const styles = StyleSheet.create({
   placeholder: {
     color: colors.slate400,
     fontSize: 16,
-  },
-  fab: {
-    position: "absolute",
-    bottom: 24,
-    alignSelf: "center",
-    backgroundColor: colors.blue500,
   },
   snackbar: {
     backgroundColor: colors.red500,

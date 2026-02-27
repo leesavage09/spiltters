@@ -12,6 +12,7 @@ import CreateSplitModal from "../components/CreateSplitModal";
 import { colors } from "../theme/theme";
 import type { SplitResponseDto } from "../generated/api.schemas";
 import { getApiUrl } from "@/api/client";
+import { Fab } from "@/components/ui/fab/fab";
 
 const HomeScreen: React.FC = () => {
   const navigation =
@@ -77,15 +78,6 @@ const HomeScreen: React.FC = () => {
           <Text variant="titleMedium" style={styles.sectionTitle}>
             Your Splits
           </Text>
-          <Button
-            mode="contained"
-            onPress={() => setModalVisible(true)}
-            buttonColor={colors.emerald600}
-            textColor={colors.white}
-            compact
-          >
-            Create new split
-          </Button>
         </View>
 
         {splitsLoading ? (
@@ -101,6 +93,12 @@ const HomeScreen: React.FC = () => {
           />
         )}
       </View>
+
+      <Fab
+        icon="plus"
+        label="Create new split"
+        onPress={() => setModalVisible(true)}
+      />
 
       <CreateSplitModal
         visible={modalVisible}
