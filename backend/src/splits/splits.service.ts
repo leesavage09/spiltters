@@ -1,5 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import type { MessageResponseDto } from '../auth/dto/message-response.dto';
 import { SplitResponseDto } from './dto/split-response.dto';
 
 @Injectable()
@@ -31,6 +36,26 @@ export class SplitsService {
     });
 
     return this.toResponseDto(split, userId);
+  }
+
+  async delete(userId: string, splitId: string): Promise<MessageResponseDto> {
+    const split = await this.prisma.split.findUnique({
+      where: { id: splitId },
+      include: { users: true },
+    });
+
+    if (!split || !split.users.some((u) => u.userId === userId))
+      throw new NotFoundException('Split not found');
+
+    if (split.users.length > 1)
+      throw new ForbiddenException(
+        'Cannot delete a split that has other members',
+      );
+
+    await this.prisma.splitUser.deleteMany({ where: { splitId } });
+    await this.prisma.split.delete({ where: { id: splitId } });
+
+    return { message: 'Split deleted' };
   }
 
   private toResponseDto(

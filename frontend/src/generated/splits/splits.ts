@@ -6,6 +6,7 @@
  */
 import type {
   CreateSplitDto,
+  MessageResponseDto,
   SplitResponseDto
 } from '../api.schemas';
 
@@ -38,6 +39,18 @@ const splitsControllerCreate = (
     },
       );
     }
-  return {splitsControllerFindAll,splitsControllerCreate}};
+  /**
+ * @summary Delete a split
+ */
+const splitsControllerDelete = (
+    id: string,
+ ) => {
+      return customInstance<MessageResponseDto>(
+      {url: `/api/splits/${id}`, method: 'DELETE'
+    },
+      );
+    }
+  return {splitsControllerFindAll,splitsControllerCreate,splitsControllerDelete}};
 export type SplitsControllerFindAllResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getSplits>['splitsControllerFindAll']>>>
 export type SplitsControllerCreateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getSplits>['splitsControllerCreate']>>>
+export type SplitsControllerDeleteResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getSplits>['splitsControllerDelete']>>>

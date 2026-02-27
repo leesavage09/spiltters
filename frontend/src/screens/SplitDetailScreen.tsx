@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { Appbar, FAB, Menu, Text } from "react-native-paper";
+import { Appbar, FAB, Menu, Snackbar, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RouteProp } from "@react-navigation/native";
 import type { RootStackParamList } from "../navigation/navigationRef";
-import { useSplits } from "../hooks/useSplits";
+import { useDeleteSplit, useSplits } from "../hooks/useSplits";
 import { colors } from "../theme/theme";
 
 const SplitDetailScreen: React.FC = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, "SplitDetail">>();
   const { data: splits, isLoading } = useSplits();
+  const deleteSplit = useDeleteSplit();
   const [menuVisible, setMenuVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const split = splits?.find((s) => s.id === route.params.splitId);
 
@@ -53,8 +55,13 @@ const SplitDetailScreen: React.FC = () => {
           />
           <Menu.Item
             onPress={() => {
-              console.log("Delete split:", split.id);
               setMenuVisible(false);
+              deleteSplit.mutate(split.id, {
+                onSuccess: () => navigation.replace("Home"),
+                onError: (error) => {
+                  setSnackbarMessage(error.response?.data?.message ?? "Failed to delete split");
+                },
+              });
             }}
             title="Delete"
             titleStyle={styles.menuItemTextDestructive}
@@ -73,6 +80,14 @@ const SplitDetailScreen: React.FC = () => {
         style={styles.fab}
         color={colors.white}
       />
+      <Snackbar
+        visible={!!snackbarMessage}
+        onDismiss={() => setSnackbarMessage("")}
+        duration={4000}
+        style={styles.snackbar}
+      >
+        {snackbarMessage}
+      </Snackbar>
     </SafeAreaView>
   );
 };
@@ -119,6 +134,9 @@ const styles = StyleSheet.create({
     bottom: 24,
     alignSelf: "center",
     backgroundColor: colors.blue500,
+  },
+  snackbar: {
+    backgroundColor: colors.red500,
   },
 });
 

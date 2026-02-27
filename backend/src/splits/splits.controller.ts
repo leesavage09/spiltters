@@ -1,7 +1,17 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { AuthenticatedRequest } from '../auth/interfaces/authenticated-request.interface';
+import { MessageResponseDto } from '../auth/dto/message-response.dto';
 import { CreateSplitDto } from './dto/create-split.dto';
 import { SplitResponseDto } from './dto/split-response.dto';
 import { SplitsService } from './splits.service';
@@ -28,5 +38,15 @@ export class SplitsController {
     @Req() req: AuthenticatedRequest,
   ): Promise<SplitResponseDto> {
     return this.splitsService.create(req.user.id, dto.name, dto.emoji);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a split' })
+  @ApiResponse({ status: 200, type: MessageResponseDto })
+  async delete(
+    @Param('id') id: string,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<MessageResponseDto> {
+    return this.splitsService.delete(req.user.id, id);
   }
 }
