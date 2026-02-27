@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "Splitters",
+    "slug": "splitters",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "splitters",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": []
+  }
+}

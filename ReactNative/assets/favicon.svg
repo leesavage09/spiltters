@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Background circle -->
+  <circle cx="24" cy="24" r="24" fill="#2563eb"/>
+  <!-- Split line down the middle -->
+  <line x1="24" y1="10" x2="24" y2="38" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 3"/>
+  <!-- Left coin -->
+  <circle cx="16" cy="20" r="6" fill="#fbbf24" stroke="#f59e0b" stroke-width="1"/>
+  <text x="16" y="23" text-anchor="middle" font-size="8" font-weight="bold" fill="#92400e" font-family="Arial, sans-serif">$</text>
+  <!-- Right coin -->
+  <circle cx="32" cy="28" r="6" fill="#fbbf24" stroke="#f59e0b" stroke-width="1"/>
+  <text x="32" y="31" text-anchor="middle" font-size="8" font-weight="bold" fill="#92400e" font-family="Arial, sans-serif">$</text>
+</svg>
