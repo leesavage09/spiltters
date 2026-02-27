@@ -7,6 +7,10 @@
     "scheme": "splitters",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
+    "backgroundColor": "#020617",
+    "android": {
+      "backgroundColor": "#020617"
+    },
     "web": {
       "bundler": "metro",
       "favicon": "./assets/favicon.png"

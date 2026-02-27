@@ -27,6 +27,7 @@ const AppNavigator: React.FC = () => {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: "#020617" },
+        navigationBarColor: "#020617",
       }}
     >
       <Stack.Screen name="Login" component={LoginScreen} />
