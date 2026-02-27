@@ -10,5 +10,6 @@ build/
 *.swp
 *.swo
 .DS_Store
+.claude
 frontend/dist
 backend/dist
