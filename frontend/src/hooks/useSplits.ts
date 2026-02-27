@@ -8,7 +8,6 @@ import { getSplits } from "../generated/splits/splits";
 
 const { splitsControllerFindAll, splitsControllerCreate } = getSplits();
 
-//TODO Error response is not typed, need to be fixed in the backend and then updated here
 interface ErrorResponse {
   message: string;
   statusCode: number;

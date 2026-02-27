@@ -5,8 +5,6 @@ import { useHealth } from "../hooks/useHealth";
 import { useSplits } from "../hooks/useSplits";
 import CreateSplitModal from "../components/CreateSplitModal";
 
-//TODO Unsafe member access .name on a type that cannot be resolved
-
 const Home: FC = () => {
   const { data, isLoading, error } = useHealth();
   const { data: user } = useCurrentUser();

@@ -26,6 +26,9 @@ apiClient.interceptors.response.use(
 
 export default apiClient;
 
-export const customInstance = <T>(config: AxiosRequestConfig): Promise<T> => {
-  return apiClient(config).then((response) => response.data as T);
+export const customInstance = async <T>(
+  config: AxiosRequestConfig,
+): Promise<T> => {
+  const response = await apiClient(config);
+  return response.data as T;
 };
