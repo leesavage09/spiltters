@@ -1,5 +1,6 @@
 import type { FC } from "react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useCurrentUser, useLogout } from "../hooks/useAuth";
 import { useHealth } from "../hooks/useHealth";
 import { useSplits } from "../hooks/useSplits";
@@ -81,14 +82,25 @@ const Home: FC = () => {
           ) : splits && splits.length > 0 ? (
             <ul className="space-y-2">
               {splits.map((split) => (
-                <li
-                  key={split.id}
-                  className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-950 px-4 py-3"
-                >
-                  <span className="text-xl">{split.emoji}</span>
-                  <span className="text-sm font-medium text-slate-200">
-                    {split.name}
-                  </span>
+                <li key={split.id}>
+                  <Link
+                    to={`/splits/${split.id}`}
+                    className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 transition hover:bg-slate-800 active:bg-slate-700 cursor-pointer"
+                  >
+                    <span className="text-xl">{split.emoji}</span>
+                    <span className="text-sm font-medium text-slate-200 flex-1">
+                      {split.name}
+                    </span>
+                    <svg
+                      className="h-4 w-4 text-slate-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
                 </li>
               ))}
             </ul>

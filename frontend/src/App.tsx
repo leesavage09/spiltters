@@ -5,6 +5,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import SplitDetail from "./pages/SplitDetail";
 import "./index.css";
 
 const queryClient = new QueryClient();
@@ -21,6 +22,14 @@ const App: FC = () => {
             element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/splits/:splitId"
+            element={
+              <ProtectedRoute>
+                <SplitDetail />
               </ProtectedRoute>
             }
           />

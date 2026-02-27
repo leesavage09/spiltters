@@ -1,1 +1,46 @@
 @import "tailwindcss";
+
+/* Ionic dark theme */
+:root {
+  --ion-background-color: #020617; /* slate-950 */
+  --ion-background-color-rgb: 2, 6, 23;
+  --ion-text-color: #ffffff;
+  --ion-text-color-rgb: 255, 255, 255;
+  --ion-toolbar-background: #0f172a; /* slate-900 */
+  --ion-toolbar-color: #ffffff;
+  --ion-item-background: #0f172a; /* slate-900 */
+  --ion-item-color: #ffffff;
+  --ion-card-background: #0f172a;
+  --ion-border-color: #1e293b; /* slate-800 */
+}
+
+/* FAB button */
+ion-fab-button {
+  --background: #3b82f6; /* blue-500 */
+  --background-activated: #2563eb; /* blue-600 */
+}
+
+/* Action sheet styling */
+ion-action-sheet {
+  --background: #0f172a; /* slate-900 */
+  --button-background: #0f172a;
+  --button-color: #ffffff;
+  --color: #ffffff;
+}
+
+ion-action-sheet .action-sheet-button {
+  color: #ffffff;
+  padding: 16px 20px;
+}
+
+ion-action-sheet .action-sheet-button {
+  color: #ffffff;
+}
+
+ion-action-sheet .action-sheet-destructive {
+  color: #ef4444; /* red-500 */
+}
+
+ion-action-sheet .action-sheet-destructive .action-sheet-icon {
+  color: #ef4444;
+}
