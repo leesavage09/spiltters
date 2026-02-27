@@ -24,7 +24,7 @@ const SplitDetailScreen: React.FC = () => {
   if (isLoading || !split) return null;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
       <Appbar.Header style={styles.header}>
         <Appbar.BackAction onPress={() => navigation.goBack()} iconColor={colors.white} />
         <Appbar.Content

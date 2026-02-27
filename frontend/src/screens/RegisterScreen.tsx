@@ -41,7 +41,7 @@ const RegisterScreen: React.FC = () => {
   const errorMessage = clientError || serverError;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
       <View style={styles.content}>
         <Text variant="headlineLarge" style={styles.title}>
           Splitters

@@ -27,7 +27,7 @@ const LoginScreen: React.FC = () => {
   const errorMessage = login.error?.response?.data?.message;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
       <View style={styles.content}>
         <Text variant="headlineLarge" style={styles.title}>
           Splitters

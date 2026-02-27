@@ -41,7 +41,7 @@ const HomeScreen: React.FC = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
       <Appbar.Header style={styles.header}>
         <Appbar.Content title="Splitters" titleStyle={styles.headerTitle} />
         <Text style={styles.userEmail}>{user?.email}</Text>
