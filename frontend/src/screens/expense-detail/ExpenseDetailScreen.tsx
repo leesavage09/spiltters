@@ -18,6 +18,7 @@ import { formatFullDate } from "@/utils/dateUtils";
 import { getDisplayName } from "@/utils/displayName";
 import { flattenPages } from "@/utils/pagination";
 import { extractErrorMessage } from "@/types/api";
+import { detailScreenStyles } from "@/theme/screenStyles";
 
 const ExpenseDetailScreen: React.FC = () => {
   const navigation =
@@ -52,7 +53,7 @@ const ExpenseDetailScreen: React.FC = () => {
           />
           <Appbar.Content
             title={expense.title}
-            titleStyle={styles.headerTitle}
+            titleStyle={detailScreenStyles.headerTitle}
           />
           <Menu
             visible={menuVisible}
@@ -64,7 +65,7 @@ const ExpenseDetailScreen: React.FC = () => {
                 iconColor={colors.white}
               />
             }
-            contentStyle={styles.menuContent}
+            contentStyle={detailScreenStyles.menuContent}
           >
             <Menu.Item
               onPress={() => {
@@ -72,7 +73,7 @@ const ExpenseDetailScreen: React.FC = () => {
                 setEditModalVisible(true);
               }}
               title="Edit"
-              titleStyle={styles.menuItemText}
+              titleStyle={detailScreenStyles.menuItemText}
             />
             <Menu.Item
               onPress={() => {
@@ -80,7 +81,7 @@ const ExpenseDetailScreen: React.FC = () => {
                 setDeleteDialogVisible(true);
               }}
               title="Delete"
-              titleStyle={styles.menuItemTextDestructive}
+              titleStyle={detailScreenStyles.menuItemTextDestructive}
             />
           </Menu>
         </>
@@ -167,20 +168,6 @@ const ExpenseDetailScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  headerTitle: {
-    color: colors.white,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  menuContent: {
-    backgroundColor: colors.slate900,
-  },
-  menuItemText: {
-    color: colors.white,
-  },
-  menuItemTextDestructive: {
-    color: colors.red500,
-  },
   scrollContent: {
     paddingTop: 16,
     paddingBottom: 32,

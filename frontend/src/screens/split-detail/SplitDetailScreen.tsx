@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { StyleSheet } from "react-native";
 import { Appbar, Menu } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -17,6 +16,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog/confirmDialog";
 import { ExpenseModal } from "@/components/ui/expense-modal/expenseModal";
 import { InviteModal } from "@/components/ui/invite-modal/inviteModal";
 import { extractErrorMessage } from "@/types/api";
+import { detailScreenStyles } from "@/theme/screenStyles";
 import { flattenPages, useLoadMore } from "@/utils/pagination";
 import { ExpenseList } from "./components/ExpenseList";
 
@@ -70,7 +70,7 @@ const SplitDetailScreen: React.FC = () => {
           />
           <Appbar.Content
             title={`${split.emoji} ${split.name}`}
-            titleStyle={styles.headerTitle}
+            titleStyle={detailScreenStyles.headerTitle}
           />
           <Menu
             visible={menuVisible}
@@ -82,7 +82,7 @@ const SplitDetailScreen: React.FC = () => {
                 iconColor={colors.white}
               />
             }
-            contentStyle={styles.menuContent}
+            contentStyle={detailScreenStyles.menuContent}
           >
             <Menu.Item
               onPress={() => {
@@ -90,7 +90,7 @@ const SplitDetailScreen: React.FC = () => {
                 setEditModalVisible(true);
               }}
               title="Edit"
-              titleStyle={styles.menuItemText}
+              titleStyle={detailScreenStyles.menuItemText}
             />
             <Menu.Item
               onPress={() => {
@@ -98,7 +98,7 @@ const SplitDetailScreen: React.FC = () => {
                 setInviteModalVisible(true);
               }}
               title="Invite"
-              titleStyle={styles.menuItemText}
+              titleStyle={detailScreenStyles.menuItemText}
             />
             <Menu.Item
               onPress={() => {
@@ -106,7 +106,7 @@ const SplitDetailScreen: React.FC = () => {
                 setDeleteDialogVisible(true);
               }}
               title="Delete"
-              titleStyle={styles.menuItemTextDestructive}
+              titleStyle={detailScreenStyles.menuItemTextDestructive}
             />
           </Menu>
         </>
@@ -179,22 +179,5 @@ const SplitDetailScreen: React.FC = () => {
     </Page>
   );
 };
-
-const styles = StyleSheet.create({
-  headerTitle: {
-    color: colors.white,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  menuContent: {
-    backgroundColor: colors.slate900,
-  },
-  menuItemText: {
-    color: colors.white,
-  },
-  menuItemTextDestructive: {
-    color: colors.red500,
-  },
-});
 
 export default SplitDetailScreen;
