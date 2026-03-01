@@ -23,10 +23,10 @@ const App: React.FC = () => {
       <PaperProvider theme={theme}>
         <SnackbarProvider>
           <SafeAreaProvider>
-          <NavigationContainer ref={navigationRef}>
-            <StatusBar style="light" />
-            <AppNavigator />
-          </NavigationContainer>
+            <NavigationContainer ref={navigationRef}>
+              <StatusBar style="light" />
+              <AppNavigator />
+            </NavigationContainer>
           </SafeAreaProvider>
         </SnackbarProvider>
       </PaperProvider>

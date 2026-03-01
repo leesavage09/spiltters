@@ -6,22 +6,26 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RouteProp } from "@react-navigation/native";
 import type { RootStackParamList } from "../navigation/navigationRef";
 import { useDeleteSplit, useSplits } from "../hooks/useSplits";
+import { useCurrentUser } from "../hooks/useAuth";
 import { colors } from "../theme/theme";
 import { Fab } from "@/components/ui/fab/fab";
 import { Page } from "@/components/ui/page/page";
 import { useSnackbar } from "@/components/ui/snackbar/snackbar";
 import { SplitModal } from "@/components/ui/split-modal/splitModal";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog/confirmDialog";
+import { ExpenseModal } from "@/components/ui/expense-modal/expenseModal";
 
 const SplitDetailScreen: React.FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, "SplitDetail">>();
+  const { data: user } = useCurrentUser();
   const { data: splits, isLoading } = useSplits();
   const deleteSplit = useDeleteSplit();
   const [menuVisible, setMenuVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+  const [expenseModalVisible, setExpenseModalVisible] = useState(false);
   const { showSnackbar } = useSnackbar();
 
   const split = splits?.find((s) => s.id === route.params.splitId);
@@ -84,7 +88,7 @@ const SplitDetailScreen: React.FC = () => {
         <Fab
           icon="plus"
           label="Add Expense"
-          onPress={() => console.log("Add expense to split:", split.id)}
+          onPress={() => setExpenseModalVisible(true)}
         />
 
         <ConfirmDialog
@@ -116,6 +120,15 @@ const SplitDetailScreen: React.FC = () => {
           splitId={split.id}
           initialValues={{ emoji: split.emoji, name: split.name }}
         />
+
+        {user && (
+          <ExpenseModal
+            visible={expenseModalVisible}
+            onDismiss={() => setExpenseModalVisible(false)}
+            members={[{ id: user.id, email: user.email }, ...split.users]}
+            currentUserId={user.id}
+          />
+        )}
       </>
     </Page>
   );
