@@ -7,7 +7,8 @@
 import type {
   CreateSplitDto,
   MessageResponseDto,
-  SplitResponseDto
+  SplitResponseDto,
+  UpdateSplitDto
 } from '../api.schemas';
 
 import { customInstance } from '../../api/client';
@@ -40,6 +41,20 @@ const splitsControllerCreate = (
       );
     }
   /**
+ * @summary Update a split
+ */
+const splitsControllerUpdate = (
+    id: string,
+    updateSplitDto: UpdateSplitDto,
+ ) => {
+      return customInstance<SplitResponseDto>(
+      {url: `/api/splits/${id}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updateSplitDto
+    },
+      );
+    }
+  /**
  * @summary Delete a split
  */
 const splitsControllerDelete = (
@@ -50,7 +65,8 @@ const splitsControllerDelete = (
     },
       );
     }
-  return {splitsControllerFindAll,splitsControllerCreate,splitsControllerDelete}};
+  return {splitsControllerFindAll,splitsControllerCreate,splitsControllerUpdate,splitsControllerDelete}};
 export type SplitsControllerFindAllResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getSplits>['splitsControllerFindAll']>>>
 export type SplitsControllerCreateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getSplits>['splitsControllerCreate']>>>
+export type SplitsControllerUpdateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getSplits>['splitsControllerUpdate']>>>
 export type SplitsControllerDeleteResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getSplits>['splitsControllerDelete']>>>

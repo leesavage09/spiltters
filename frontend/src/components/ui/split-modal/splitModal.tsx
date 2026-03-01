@@ -1,35 +1,68 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Modal, Portal, Text, TextInput } from "react-native-paper";
-import { useCreateSplit } from "../hooks/useSplits";
-import { colors } from "../theme/theme";
+import { useCreateSplit, useUpdateSplit } from "@/hooks/useSplits";
+import { colors } from "@/theme/theme";
 
-interface CreateSplitModalProps {
+interface SplitModalProps {
   visible: boolean;
   onDismiss: () => void;
+  mode: "create" | "edit";
+  splitId?: string;
+  initialValues?: { emoji: string; name: string };
 }
 
-const CreateSplitModal: React.FC<CreateSplitModalProps> = ({ visible, onDismiss }) => {
+export const SplitModal: React.FC<SplitModalProps> = ({
+  visible,
+  onDismiss,
+  mode,
+  splitId,
+  initialValues,
+}) => {
   const [emoji, setEmoji] = useState("");
   const [name, setName] = useState("");
   const createSplit = useCreateSplit();
+  const updateSplit = useUpdateSplit();
+
+  const isEdit = mode === "edit";
+  const mutation = isEdit ? updateSplit : createSplit;
+
+  useEffect(() => {
+    if (visible && initialValues) {
+      setEmoji(initialValues.emoji);
+      setName(initialValues.name);
+    }
+  }, [visible, initialValues]);
 
   const handleSave = () => {
-    createSplit.mutate(
-      { emoji, name },
-      {
-        onSuccess: () => {
-          setEmoji("");
-          setName("");
-          onDismiss();
+    if (isEdit && splitId) {
+      updateSplit.mutate(
+        { id: splitId, data: { emoji, name } },
+        {
+          onSuccess: () => {
+            onDismiss();
+          },
         },
-      },
-    );
+      );
+    } else {
+      createSplit.mutate(
+        { emoji, name },
+        {
+          onSuccess: () => {
+            setEmoji("");
+            setName("");
+            onDismiss();
+          },
+        },
+      );
+    }
   };
 
   const handleDismiss = () => {
-    setEmoji("");
-    setName("");
+    if (!isEdit) {
+      setEmoji("");
+      setName("");
+    }
     onDismiss();
   };
 
@@ -41,7 +74,7 @@ const CreateSplitModal: React.FC<CreateSplitModalProps> = ({ visible, onDismiss 
         contentContainerStyle={styles.modal}
       >
         <Text variant="titleLarge" style={styles.title}>
-          Create New Split
+          {isEdit ? "Edit Split" : "Create New Split"}
         </Text>
 
         <TextInput
@@ -79,8 +112,8 @@ const CreateSplitModal: React.FC<CreateSplitModalProps> = ({ visible, onDismiss 
           <Button
             mode="contained"
             onPress={handleSave}
-            loading={createSplit.isPending}
-            disabled={createSplit.isPending || !emoji || !name}
+            loading={mutation.isPending}
+            disabled={mutation.isPending || !emoji || !name}
             buttonColor={colors.emerald600}
             textColor={colors.white}
           >
@@ -118,5 +151,3 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
-
-export default CreateSplitModal;

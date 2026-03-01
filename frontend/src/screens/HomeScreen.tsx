@@ -7,7 +7,7 @@ import type { RootStackParamList } from "../navigation/navigationRef";
 import { useCurrentUser, useLogout } from "../hooks/useAuth";
 import { useSplits } from "../hooks/useSplits";
 import { useHealth } from "../hooks/useHealth";
-import CreateSplitModal from "../components/CreateSplitModal";
+import { SplitModal } from "@/components/ui/split-modal/splitModal";
 import { colors } from "../theme/theme";
 import type { SplitResponseDto } from "../generated/api.schemas";
 import { getApiUrl } from "@/api/client";
@@ -101,9 +101,10 @@ const HomeScreen: React.FC = () => {
           onPress={() => setModalVisible(true)}
         />
 
-        <CreateSplitModal
+        <SplitModal
           visible={modalVisible}
           onDismiss={() => setModalVisible(false)}
+          mode="create"
         />
       </>
     </Page>

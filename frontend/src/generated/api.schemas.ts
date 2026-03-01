@@ -48,3 +48,9 @@ export interface CreateSplitDto {
   emoji: string;
 }
 
+export interface UpdateSplitDto {
+  /** @maxLength 50 */
+  name?: string;
+  emoji?: string;
+}
+

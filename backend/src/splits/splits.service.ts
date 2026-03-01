@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { MessageResponseDto } from '../auth/dto/message-response.dto';
 import { SplitResponseDto } from './dto/split-response.dto';
+import type { UpdateSplitDto } from './dto/update-split.dto';
 import { UserSafeException } from 'src/common/errors/useSafeError';
 
 @Injectable()
@@ -29,6 +30,28 @@ export class SplitsService {
         emoji,
         users: { create: { userId } },
       },
+      include: { users: { include: { user: true } } },
+    });
+
+    return this.toResponseDto(split, userId);
+  }
+
+  async update(
+    userId: string,
+    splitId: string,
+    data: UpdateSplitDto,
+  ): Promise<SplitResponseDto> {
+    const existing = await this.prisma.split.findUnique({
+      where: { id: splitId },
+      include: { users: { include: { user: true } } },
+    });
+
+    if (!existing || !existing.users.some((u) => u.userId === userId))
+      throw new UserSafeException('Split not found');
+
+    const split = await this.prisma.split.update({
+      where: { id: splitId },
+      data,
       include: { users: { include: { user: true } } },
     });
 

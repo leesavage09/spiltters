@@ -11,6 +11,7 @@ import { colors } from "../theme/theme";
 import { Fab } from "@/components/ui/fab/fab";
 import { Page } from "@/components/ui/page/page";
 import { useSnackbar } from "@/components/ui/snackbar/snackbar";
+import { SplitModal } from "@/components/ui/split-modal/splitModal";
 
 const SplitDetailScreen: React.FC = () => {
   const navigation =
@@ -19,6 +20,7 @@ const SplitDetailScreen: React.FC = () => {
   const { data: splits, isLoading } = useSplits();
   const deleteSplit = useDeleteSplit();
   const [menuVisible, setMenuVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
   const { showSnackbar } = useSnackbar();
 
   const split = splits?.find((s) => s.id === route.params.splitId);
@@ -55,8 +57,8 @@ const SplitDetailScreen: React.FC = () => {
           >
             <Menu.Item
               onPress={() => {
-                console.log("Edit split:", split.id);
                 setMenuVisible(false);
+                setEditModalVisible(true);
               }}
               title="Edit"
               titleStyle={styles.menuItemText}
@@ -90,6 +92,14 @@ const SplitDetailScreen: React.FC = () => {
           icon="plus"
           label="Add Expense"
           onPress={() => console.log("Add expense to split:", split.id)}
+        />
+
+        <SplitModal
+          visible={editModalVisible}
+          onDismiss={() => setEditModalVisible(false)}
+          mode="edit"
+          splitId={split.id}
+          initialValues={{ emoji: split.emoji, name: split.name }}
         />
       </>
     </Page>

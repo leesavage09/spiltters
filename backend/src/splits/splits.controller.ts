@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -13,6 +14,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { AuthenticatedRequest } from '../auth/interfaces/authenticated-request.interface';
 import { MessageResponseDto } from '../auth/dto/message-response.dto';
 import { CreateSplitDto } from './dto/create-split.dto';
+import { UpdateSplitDto } from './dto/update-split.dto';
 import { SplitResponseDto } from './dto/split-response.dto';
 import { SplitsService } from './splits.service';
 
@@ -38,6 +40,18 @@ export class SplitsController {
     @Req() req: AuthenticatedRequest,
   ): Promise<SplitResponseDto> {
     return this.splitsService.create(req.user.id, dto.name, dto.emoji);
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update a split' })
+  @ApiBody({ type: UpdateSplitDto })
+  @ApiResponse({ status: 200, type: SplitResponseDto })
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateSplitDto,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<SplitResponseDto> {
+    return this.splitsService.update(req.user.id, id, dto);
   }
 
   @Delete(':id')

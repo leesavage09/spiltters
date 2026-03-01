@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import type { CreateSplitDto, MessageResponseDto, SplitResponseDto } from "../generated/api.schemas";
+import type { CreateSplitDto, MessageResponseDto, SplitResponseDto, UpdateSplitDto } from "../generated/api.schemas";
 import { getSplits } from "../generated/splits/splits";
 
-const { splitsControllerFindAll, splitsControllerCreate, splitsControllerDelete } = getSplits();
+const { splitsControllerFindAll, splitsControllerCreate, splitsControllerUpdate, splitsControllerDelete } = getSplits();
 
 interface ErrorResponse {
   message: string;
@@ -27,6 +27,21 @@ export const useCreateSplit = () => {
     CreateSplitDto
   >({
     mutationFn: splitsControllerCreate,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["splits"] }).catch(() => {});
+    },
+  });
+};
+
+export const useUpdateSplit = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    SplitResponseDto,
+    AxiosError<ErrorResponse>,
+    { id: string; data: UpdateSplitDto }
+  >({
+    mutationFn: ({ id, data }) => splitsControllerUpdate(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["splits"] }).catch(() => {});
     },

@@ -187,6 +187,45 @@
       }
     },
     "/api/splits/{id}": {
+      "patch": {
+        "operationId": "SplitsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSplitDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SplitResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update a split",
+        "tags": [
+          "splits"
+        ]
+      },
       "delete": {
         "operationId": "SplitsController_delete",
         "parameters": [
@@ -364,6 +403,20 @@
           "name",
           "emoji"
         ]
+      },
+      "UpdateSplitDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Friday Dinner",
+            "maxLength": 50
+          },
+          "emoji": {
+            "type": "string",
+            "example": "🍕"
+          }
+        }
       }
     }
   }
