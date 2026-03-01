@@ -13,6 +13,7 @@ import { Page } from "@/components/ui/page/page";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog/confirmDialog";
 import { useSnackbar } from "@/components/ui/snackbar/snackbar";
 import { flattenPages, useLoadMore } from "@/utils/pagination";
+import { extractErrorMessage } from "@/types/api";
 
 const NotificationsScreen: React.FC = () => {
   const navigation =
@@ -61,7 +62,7 @@ const NotificationsScreen: React.FC = () => {
       onError: (error) => {
         setSelectedNotification(null);
         showSnackbar({
-          message: error.response?.data?.message ?? "Failed to join split",
+          message: extractErrorMessage(error, "Failed to join split"),
           type: "error",
         });
       },

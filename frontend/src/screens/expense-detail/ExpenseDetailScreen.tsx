@@ -17,6 +17,7 @@ import { formatAmount } from "@/utils/currencyUtils";
 import { formatFullDate } from "@/utils/dateUtils";
 import { getDisplayName } from "@/utils/displayName";
 import { flattenPages } from "@/utils/pagination";
+import { extractErrorMessage } from "@/types/api";
 
 const ExpenseDetailScreen: React.FC = () => {
   const navigation =
@@ -126,7 +127,7 @@ const ExpenseDetailScreen: React.FC = () => {
                   },
                   onError: (error) => {
                     showSnackbar({
-                      message: error.response?.data?.message ?? "Failed to delete expense",
+                      message: extractErrorMessage(error, "Failed to delete expense"),
                       type: "error",
                     });
                   },

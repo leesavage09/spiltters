@@ -6,6 +6,7 @@ import { DatePickerInput } from "react-native-paper-dates";
 import { colors } from "@/theme/theme";
 import { useCreateExpense, useUpdateExpense } from "@/hooks/useExpenses";
 import { modalStyles } from "@/components/ui/modal-styles/modalStyles";
+import { extractErrorMessage } from "@/types/api";
 import { ModalActions } from "@/components/ui/modal-styles/ModalActions";
 import type { CreateExpenseDtoCurrency } from "@/generated/api.schemas";
 
@@ -180,7 +181,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
         onSuccess?.();
       },
       onError: (error: { response?: { data?: { message?: string } } }) => {
-        onError?.(error.response?.data?.message ?? `Failed to ${isEdit ? "update" : "create"} expense`);
+        onError?.(extractErrorMessage(error, `Failed to ${isEdit ? "update" : "create"} expense`));
       },
     };
 

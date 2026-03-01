@@ -4,6 +4,7 @@ import { useCreateInvitation } from "@/hooks/useInvitations";
 import { useSnackbar } from "@/components/ui/snackbar/snackbar";
 import { colors } from "@/theme/theme";
 import { modalStyles } from "@/components/ui/modal-styles/modalStyles";
+import { extractErrorMessage } from "@/types/api";
 import { ModalActions } from "@/components/ui/modal-styles/ModalActions";
 
 interface InviteModalProps {
@@ -38,7 +39,7 @@ export const InviteModal: React.FC<InviteModalProps> = ({
         },
         onError: (error) => {
           showSnackbar({
-            message: error.response?.data?.message ?? "Failed to send invitation",
+            message: extractErrorMessage(error, "Failed to send invitation"),
             type: "error",
           });
         },

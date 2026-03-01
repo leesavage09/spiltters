@@ -16,6 +16,7 @@ import { SplitModal } from "@/components/ui/split-modal/splitModal";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog/confirmDialog";
 import { ExpenseModal } from "@/components/ui/expense-modal/expenseModal";
 import { InviteModal } from "@/components/ui/invite-modal/inviteModal";
+import { extractErrorMessage } from "@/types/api";
 import { flattenPages, useLoadMore } from "@/utils/pagination";
 import { ExpenseList } from "./components/ExpenseList";
 
@@ -139,7 +140,7 @@ const SplitDetailScreen: React.FC = () => {
                 onSuccess: () => navigation.replace("Home"),
                 onError: (error) => {
                   showSnackbar({
-                    message: error.response?.data?.message ?? "Failed to delete split",
+                    message: extractErrorMessage(error, "Failed to delete split"),
                     type: "error",
                   });
                 },
