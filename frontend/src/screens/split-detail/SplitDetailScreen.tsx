@@ -1,32 +1,21 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
-import { ActivityIndicator, Appbar, Menu, Text } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { Appbar, Menu } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RouteProp } from "@react-navigation/native";
-import type { RootStackParamList } from "../navigation/navigationRef";
-import type { ExpenseResponseDto } from "../generated/api.schemas";
-import { useDeleteSplit, useSplits } from "../hooks/useSplits";
-import { useCurrentUser } from "../hooks/useAuth";
-import { useExpenses } from "../hooks/useExpenses";
-import { colors } from "../theme/theme";
+import type { RootStackParamList } from "../../navigation/navigationRef";
+import { useDeleteSplit, useSplits } from "../../hooks/useSplits";
+import { useCurrentUser } from "../../hooks/useAuth";
+import { useExpenses } from "../../hooks/useExpenses";
+import { colors } from "../../theme/theme";
 import { Fab } from "@/components/ui/fab/fab";
 import { Page } from "@/components/ui/page/page";
 import { useSnackbar } from "@/components/ui/snackbar/snackbar";
 import { SplitModal } from "@/components/ui/split-modal/splitModal";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog/confirmDialog";
 import { ExpenseModal } from "@/components/ui/expense-modal/expenseModal";
-
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  GBP: "£",
-  EUR: "€",
-  USD: "$",
-};
-
-const formatAmount = (pence: number, currency: string): string => {
-  const symbol = CURRENCY_SYMBOLS[currency] ?? currency;
-  return `${symbol}${(pence / 100).toFixed(2)}`;
-};
+import { ExpenseList } from "./components/ExpenseList";
 
 const SplitDetailScreen: React.FC = () => {
   const navigation =
@@ -63,58 +52,9 @@ const SplitDetailScreen: React.FC = () => {
     if (hasNextPage && !isFetchingNextPage) fetchNextPage();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const renderExpenseItem = useCallback(
-    ({ item }: { item: ExpenseResponseDto }) => {
-      const currentUserId = user?.id;
-      const userShare = item.shares.find((s) => s.userId === currentUserId);
-      const isPayer = item.paidBy.id === currentUserId;
-      const paidByLabel = isPayer ? "You paid" : `${item.paidBy.email} paid`;
-
-      let lentBorrowedLabel = "";
-      if (userShare) {
-        if (isPayer) {
-          const lentAmount = item.amount - userShare.amount;
-          if (lentAmount > 0)
-            lentBorrowedLabel = `You lent ${formatAmount(lentAmount, item.currency)}`;
-        } else {
-          lentBorrowedLabel = `You borrowed ${formatAmount(userShare.amount, item.currency)}`;
-        }
-      }
-
-      const dateStr = new Date(item.date).toLocaleDateString();
-
-      return (
-        <TouchableOpacity
-          style={styles.expenseItem}
-          onPress={() => console.log(item.id)}
-          activeOpacity={0.7}
-        >
-          <View style={styles.expenseLeft}>
-            <Text style={styles.expenseDate}>{dateStr}</Text>
-            <Text style={styles.expenseTitle} numberOfLines={1}>
-              {item.title}
-            </Text>
-          </View>
-          <View style={styles.expenseRight}>
-            <Text style={styles.expensePaidBy}>
-              {paidByLabel} {formatAmount(item.amount, item.currency)}
-            </Text>
-            {lentBorrowedLabel ? (
-              <Text
-                style={[
-                  styles.expenseLentBorrowed,
-                  isPayer ? styles.lentColor : styles.borrowedColor,
-                ]}
-              >
-                {lentBorrowedLabel}
-              </Text>
-            ) : null}
-          </View>
-        </TouchableOpacity>
-      );
-    },
-    [user?.id],
-  );
+  const handleExpensePress = useCallback((id: string) => {
+    console.log(id);
+  }, []);
 
   if (isLoading || !split) return null;
 
@@ -163,21 +103,12 @@ const SplitDetailScreen: React.FC = () => {
       }
     >
       <>
-        <FlatList
-          data={expenses}
-          renderItem={renderExpenseItem}
-          keyExtractor={(item) => item.id}
+        <ExpenseList
+          expenses={expenses}
+          currentUserId={user?.id ?? ""}
           onEndReached={handleEndReached}
-          onEndReachedThreshold={0.5}
-          contentContainerStyle={styles.listContent}
-          ListEmptyComponent={
-            <Text style={styles.emptyText}>No expenses yet</Text>
-          }
-          ListFooterComponent={
-            isFetchingNextPage ? (
-              <ActivityIndicator style={styles.loader} color={colors.blue500} />
-            ) : null
-          }
+          isFetchingNextPage={isFetchingNextPage}
+          onExpensePress={handleExpensePress}
         />
 
         <Fab
@@ -246,61 +177,6 @@ const styles = StyleSheet.create({
   },
   menuItemTextDestructive: {
     color: colors.red500,
-  },
-  listContent: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 80,
-  },
-  emptyText: {
-    color: colors.slate400,
-    fontSize: 16,
-    textAlign: "center",
-    marginTop: 32,
-  },
-  expenseItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: colors.slate900,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
-  },
-  expenseLeft: {
-    flex: 1,
-    marginRight: 12,
-  },
-  expenseDate: {
-    color: colors.slate400,
-    fontSize: 12,
-    marginBottom: 4,
-  },
-  expenseTitle: {
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  expenseRight: {
-    alignItems: "flex-end",
-  },
-  expensePaidBy: {
-    color: colors.slate400,
-    fontSize: 13,
-    marginBottom: 4,
-  },
-  expenseLentBorrowed: {
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  lentColor: {
-    color: colors.emerald600,
-  },
-  borrowedColor: {
-    color: colors.red500,
-  },
-  loader: {
-    marginVertical: 16,
   },
 });
 

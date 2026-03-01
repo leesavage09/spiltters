@@ -4,7 +4,7 @@ import type { RootStackParamList } from "./navigationRef";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import HomeScreen from "../screens/HomeScreen";
-import SplitDetailScreen from "../screens/SplitDetailScreen";
+import SplitDetailScreen from "../screens/split-detail/SplitDetailScreen";
 import ProtectedRoute from "../components/ProtectedRoute";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
