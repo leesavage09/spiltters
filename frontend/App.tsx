@@ -7,6 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { navigationRef } from "./src/navigation/navigationRef";
 import theme from "./src/theme/theme";
+import { SnackbarProvider } from "./src/components/ui/snackbar/snackbar";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,12 +21,14 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <PaperProvider theme={theme}>
-        <SafeAreaProvider>
+        <SnackbarProvider>
+          <SafeAreaProvider>
           <NavigationContainer ref={navigationRef}>
             <StatusBar style="light" />
             <AppNavigator />
           </NavigationContainer>
-        </SafeAreaProvider>
+          </SafeAreaProvider>
+        </SnackbarProvider>
       </PaperProvider>
     </QueryClientProvider>
   );

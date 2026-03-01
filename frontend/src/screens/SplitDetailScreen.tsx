@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { Appbar, FAB, Menu, Snackbar, Text } from "react-native-paper";
+import { Appbar, FAB, Menu, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -10,6 +10,7 @@ import { useDeleteSplit, useSplits } from "../hooks/useSplits";
 import { colors } from "../theme/theme";
 import { Fab } from "@/components/ui/fab/fab";
 import { Page } from "@/components/ui/page/page";
+import { useSnackbar } from "@/components/ui/snackbar/snackbar";
 
 const SplitDetailScreen: React.FC = () => {
   const navigation =
@@ -18,7 +19,7 @@ const SplitDetailScreen: React.FC = () => {
   const { data: splits, isLoading } = useSplits();
   const deleteSplit = useDeleteSplit();
   const [menuVisible, setMenuVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const { showSnackbar } = useSnackbar();
 
   const split = splits?.find((s) => s.id === route.params.splitId);
 
@@ -66,9 +67,10 @@ const SplitDetailScreen: React.FC = () => {
                 deleteSplit.mutate(split.id, {
                   onSuccess: () => navigation.replace("Home"),
                   onError: (error) => {
-                    setSnackbarMessage(
-                      error.response?.data?.message ?? "Failed to delete split",
-                    );
+                    showSnackbar({
+                      message: error.response?.data?.message ?? "Failed to delete split",
+                      type: "error",
+                    });
                   },
                 });
               }}
@@ -89,14 +91,6 @@ const SplitDetailScreen: React.FC = () => {
           label="Add Expense"
           onPress={() => console.log("Add expense to split:", split.id)}
         />
-        <Snackbar
-          visible={!!snackbarMessage}
-          onDismiss={() => setSnackbarMessage("")}
-          duration={4000000}
-          style={styles.snackbar}
-        >
-          {snackbarMessage}
-        </Snackbar>
       </>
     </Page>
   );
@@ -138,9 +132,6 @@ const styles = StyleSheet.create({
   placeholder: {
     color: colors.slate400,
     fontSize: 16,
-  },
-  snackbar: {
-    backgroundColor: colors.red500,
   },
 });
 
