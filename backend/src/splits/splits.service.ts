@@ -1,11 +1,8 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { MessageResponseDto } from '../auth/dto/message-response.dto';
 import { SplitResponseDto } from './dto/split-response.dto';
+import { UserSafeException } from 'src/common/errors/useSafeError';
 
 @Injectable()
 export class SplitsService {
@@ -45,10 +42,10 @@ export class SplitsService {
     });
 
     if (!split || !split.users.some((u) => u.userId === userId))
-      throw new NotFoundException('Split not found');
+      throw new UserSafeException('Split not found');
 
     if (split.users.length > 1)
-      throw new ForbiddenException(
+      throw new UserSafeException(
         'Cannot delete a split that has other members',
       );
 

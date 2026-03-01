@@ -23,14 +23,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message =
-      exception instanceof HttpException
-        ? exception.message
-        : 'Woops internal server error, Sorry I guess I broke something';
-
     const body = {
       statusCode,
-      message,
+      message: '🤦 Woops something went wrong',
     };
 
     logger.error('AllExceptionsFilter', exception);
