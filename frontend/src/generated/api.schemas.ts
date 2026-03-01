@@ -54,3 +54,55 @@ export interface UpdateSplitDto {
   emoji?: string;
 }
 
+export interface ExpenseShareDto {
+  userId: string;
+  /** Amount in pence/cents */
+  amount: number;
+}
+
+export type CreateExpenseDtoCurrency = typeof CreateExpenseDtoCurrency[keyof typeof CreateExpenseDtoCurrency];
+
+
+export const CreateExpenseDtoCurrency = {
+  GBP: 'GBP',
+  EUR: 'EUR',
+  USD: 'USD',
+} as const;
+
+export interface CreateExpenseDto {
+  /** @maxLength 200 */
+  title: string;
+  /** Total amount in pence/cents */
+  amount: number;
+  currency: CreateExpenseDtoCurrency;
+  date: string;
+  /** User ID of who paid */
+  paidBy: string;
+  shares: ExpenseShareDto[];
+}
+
+export interface ExpensePaidByResponseDto {
+  id: string;
+  email: string;
+}
+
+export interface ExpenseShareResponseDto {
+  userId: string;
+  email: string;
+  /** Amount in pence/cents */
+  amount: number;
+}
+
+export interface ExpenseResponseDto {
+  id: string;
+  title: string;
+  /** Total amount in pence/cents */
+  amount: number;
+  currency: string;
+  date: string;
+  paidBy: ExpensePaidByResponseDto;
+  shares: ExpenseShareResponseDto[];
+  createdAt: string;
+  updatedAt: string;
+}
+

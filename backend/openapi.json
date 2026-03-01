@@ -255,6 +255,47 @@
           "splits"
         ]
       }
+    },
+    "/api/splits/{splitId}/expenses": {
+      "post": {
+        "operationId": "ExpensesController_create",
+        "parameters": [
+          {
+            "name": "splitId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateExpenseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create an expense in a split",
+        "tags": [
+          "expenses"
+        ]
+      }
     }
   },
   "info": {
@@ -417,6 +458,156 @@
             "example": "🍕"
           }
         }
+      },
+      "ExpenseShareDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "clxyz123"
+          },
+          "amount": {
+            "type": "number",
+            "example": 1250,
+            "description": "Amount in pence/cents"
+          }
+        },
+        "required": [
+          "userId",
+          "amount"
+        ]
+      },
+      "CreateExpenseDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Friday dinner",
+            "maxLength": 200
+          },
+          "amount": {
+            "type": "number",
+            "example": 1250,
+            "description": "Total amount in pence/cents"
+          },
+          "currency": {
+            "type": "string",
+            "example": "GBP",
+            "enum": [
+              "GBP",
+              "EUR",
+              "USD"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-03-01T12:00:00.000Z"
+          },
+          "paidBy": {
+            "type": "string",
+            "example": "clxyz123",
+            "description": "User ID of who paid"
+          },
+          "shares": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExpenseShareDto"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "amount",
+          "currency",
+          "date",
+          "paidBy",
+          "shares"
+        ]
+      },
+      "ExpensePaidByResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email"
+        ]
+      },
+      "ExpenseShareResponseDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount in pence/cents"
+          }
+        },
+        "required": [
+          "userId",
+          "email",
+          "amount"
+        ]
+      },
+      "ExpenseResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Total amount in pence/cents"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "paidBy": {
+            "$ref": "#/components/schemas/ExpensePaidByResponseDto"
+          },
+          "shares": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExpenseShareResponseDto"
+            }
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "amount",
+          "currency",
+          "date",
+          "paidBy",
+          "shares",
+          "createdAt",
+          "updatedAt"
+        ]
       }
     }
   }

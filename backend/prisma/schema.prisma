@@ -12,7 +12,9 @@ model User {
   password  String
   createdAt DateTime    @default(now()) @map("created_at")
   updatedAt DateTime    @updatedAt @map("updated_at")
-  splits    SplitUser[]
+  splits        SplitUser[]
+  expenses      Expense[]
+  expenseShares ExpenseShare[]
 
   @@map("users")
 }
@@ -24,6 +26,7 @@ model Split {
   createdAt DateTime    @default(now()) @map("created_at")
   updatedAt DateTime    @updatedAt @map("updated_at")
   users     SplitUser[]
+  expenses  Expense[]
 
   @@map("splits")
 }
@@ -37,4 +40,33 @@ model SplitUser {
 
   @@id([splitId, userId])
   @@map("split_users")
+}
+
+model Expense {
+  id        String         @id @default(cuid())
+  title     String         @db.VarChar(200)
+  amount    Int
+  currency  String         @db.VarChar(3)
+  date      DateTime
+  splitId   String         @map("split_id")
+  paidById  String         @map("paid_by_id")
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+  split     Split          @relation(fields: [splitId], references: [id])
+  paidBy    User           @relation(fields: [paidById], references: [id])
+  shares    ExpenseShare[]
+
+  @@map("expenses")
+}
+
+model ExpenseShare {
+  id        String  @id @default(cuid())
+  expenseId String  @map("expense_id")
+  userId    String  @map("user_id")
+  amount    Int
+  expense   Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@unique([expenseId, userId])
+  @@map("expense_shares")
 }

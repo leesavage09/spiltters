@@ -127,6 +127,9 @@ const SplitDetailScreen: React.FC = () => {
             onDismiss={() => setExpenseModalVisible(false)}
             members={[{ id: user.id, email: user.email }, ...split.users]}
             currentUserId={user.id}
+            splitId={split.id}
+            onSuccess={() => showSnackbar({ message: "Expense created", type: "success" })}
+            onError={(message) => showSnackbar({ message, type: "error" })}
           />
         )}
       </>

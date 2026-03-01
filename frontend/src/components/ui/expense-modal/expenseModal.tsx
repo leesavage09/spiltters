@@ -4,6 +4,8 @@ import { Button, Modal, Portal, Text, TextInput } from "react-native-paper";
 import { Dropdown } from "react-native-paper-dropdown";
 import { DatePickerInput } from "react-native-paper-dates";
 import { colors } from "@/theme/theme";
+import { useCreateExpense } from "@/hooks/useExpenses";
+import type { CreateExpenseDtoCurrency } from "@/generated/api.schemas";
 
 interface Member {
   id: string;
@@ -15,6 +17,9 @@ interface ExpenseModalProps {
   onDismiss: () => void;
   members: Member[];
   currentUserId: string;
+  splitId: string;
+  onSuccess?: () => void;
+  onError?: (message: string) => void;
 }
 
 interface ShareEntry {
@@ -47,7 +52,11 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
   onDismiss,
   members,
   currentUserId,
+  splitId,
+  onSuccess,
+  onError,
 }) => {
+  const createExpense = useCreateExpense();
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [paidBy, setPaidBy] = useState(currentUserId);
@@ -118,19 +127,31 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
   };
 
   const handleSave = () => {
-    const expenseData = {
-      title,
-      amount: parseFloat(amount) || 0,
-      paidBy,
-      date: date.toISOString(),
-      currency,
-      shares: shares.map((s) => ({
-        userId: s.userId,
-        amount: parseFloat(s.amount) || 0,
-      })),
-    };
-    console.log("Expense data:", JSON.stringify(expenseData, null, 2));
-    onDismiss();
+    createExpense.mutate(
+      {
+        splitId,
+        data: {
+          title,
+          amount: Math.round((parseFloat(amount) || 0) * 100),
+          paidBy,
+          date: date.toISOString(),
+          currency: currency as CreateExpenseDtoCurrency,
+          shares: shares.map((s) => ({
+            userId: s.userId,
+            amount: Math.round((parseFloat(s.amount) || 0) * 100),
+          })),
+        },
+      },
+      {
+        onSuccess: () => {
+          onDismiss();
+          onSuccess?.();
+        },
+        onError: (error) => {
+          onError?.(error.response?.data?.message ?? "Failed to create expense");
+        },
+      },
+    );
   };
 
   const memberMap = useMemo(

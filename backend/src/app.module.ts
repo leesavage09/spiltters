@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { SplitsModule } from './splits/splits.module';
+import { ExpensesModule } from './expenses/expenses.module';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
 
@@ -28,6 +29,7 @@ import Joi from 'joi';
     HealthModule,
     AuthModule,
     SplitsModule,
+    ExpensesModule,
   ],
 })
 export class AppModule {}
