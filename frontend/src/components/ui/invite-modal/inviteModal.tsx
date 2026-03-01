@@ -21,6 +21,12 @@ export const InviteModal: React.FC<InviteModalProps> = ({
   const { showSnackbar } = useSnackbar();
 
   const handleInvite = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      showSnackbar({ message: "Please enter a valid email address", type: "error" });
+      return;
+    }
+
     createInvitation.mutate(
       { email, splitId },
       {
