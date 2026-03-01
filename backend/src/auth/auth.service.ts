@@ -31,7 +31,7 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, this.SALT_ROUNDS);
     const user = await this.usersService.create(email, hashedPassword);
 
-    return { id: user.id, email: user.email, username: user.username };
+    return this.toResponseDto(user);
   }
 
   async validateUser(
@@ -50,7 +50,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return { id: user.id, email: user.email, username: user.username };
+    return this.toResponseDto(user);
   }
 
   async getProfile(userId: string): Promise<AuthResponseDto> {
@@ -60,7 +60,7 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    return { id: user.id, email: user.email, username: user.username };
+    return this.toResponseDto(user);
   }
 
   async updateProfile(
@@ -68,11 +68,19 @@ export class AuthService {
     data: { username?: string },
   ): Promise<AuthResponseDto> {
     const user = await this.usersService.update(userId, data);
-    return { id: user.id, email: user.email, username: user.username };
+    return this.toResponseDto(user);
   }
 
   generateToken(userId: string, email: string): string {
     const payload: JwtPayload = { sub: userId, email };
     return this.jwtService.sign(payload);
+  }
+
+  private toResponseDto(user: {
+    id: string;
+    email: string;
+    username: string | null;
+  }): AuthResponseDto {
+    return { id: user.id, email: user.email, username: user.username };
   }
 }
