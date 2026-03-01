@@ -5,6 +5,7 @@
  * OpenAPI spec version: 1.0
  */
 import type {
+  AcceptInvitationResponseDto,
   CreateInvitationDto,
   InvitationResponseDto
 } from '../api.schemas';
@@ -27,5 +28,17 @@ const invitationsControllerCreate = (
     },
       );
     }
-  return {invitationsControllerCreate}};
+  /**
+ * @summary Accept an invitation and join the split
+ */
+const invitationsControllerAccept = (
+    id: string,
+ ) => {
+      return customInstance<AcceptInvitationResponseDto>(
+      {url: `/api/invitations/${id}/accept`, method: 'POST'
+    },
+      );
+    }
+  return {invitationsControllerCreate,invitationsControllerAccept}};
 export type InvitationsControllerCreateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getInvitations>['invitationsControllerCreate']>>>
+export type InvitationsControllerAcceptResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getInvitations>['invitationsControllerAccept']>>>

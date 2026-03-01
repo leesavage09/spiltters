@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { UserSafeException } from 'src/common/errors/useSafeError';
 import type { CreateInvitationDto } from './dto/create-invitation.dto';
 import type { InvitationResponseDto } from './dto/invitation-response.dto';
+import type { AcceptInvitationResponseDto } from './dto/accept-invitation-response.dto';
 
 @Injectable()
 export class InvitationsService {
@@ -75,5 +76,31 @@ export class InvitationsService {
       splitId: invitation.splitId,
       createdAt: invitation.createdAt,
     };
+  }
+
+  async accept(
+    userId: string,
+    invitationId: string,
+  ): Promise<AcceptInvitationResponseDto> {
+    const invitation = await this.prisma.invitation.findUnique({
+      where: { id: invitationId },
+      include: { split: { include: { users: true } } },
+    });
+
+    if (!invitation || invitation.receiverId !== userId)
+      throw new UserSafeException('Invitation not found');
+
+    if (invitation.split.users.some((u) => u.userId === userId))
+      throw new UserSafeException('You are already a member of this split');
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.splitUser.create({
+        data: { splitId: invitation.splitId, userId },
+      });
+
+      await tx.invitation.delete({ where: { id: invitationId } });
+    });
+
+    return { splitId: invitation.splitId };
   }
 }

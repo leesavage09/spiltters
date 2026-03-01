@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Appbar, Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
@@ -6,9 +6,12 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../../navigation/navigationRef";
 import type { NotificationResponseDto } from "../../generated/api.schemas";
 import { useMarkNotificationRead, useNotifications } from "../../hooks/useNotifications";
+import { useAcceptInvitation } from "../../hooks/useInvitations";
 import { timeAgo } from "../../utils/timeAgo";
 import { colors } from "../../theme/theme";
 import { Page } from "@/components/ui/page/page";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog/confirmDialog";
+import { useSnackbar } from "@/components/ui/snackbar/snackbar";
 
 const NotificationsScreen: React.FC = () => {
   const navigation =
@@ -21,6 +24,9 @@ const NotificationsScreen: React.FC = () => {
     isLoading,
   } = useNotifications();
   const markAsRead = useMarkNotificationRead();
+  const acceptInvitation = useAcceptInvitation();
+  const { showSnackbar } = useSnackbar();
+  const [selectedNotification, setSelectedNotification] = useState<NotificationResponseDto | null>(null);
 
   const notifications = useMemo(
     () => notificationPages?.pages.flatMap((p) => p.items) ?? [],
@@ -33,11 +39,35 @@ const NotificationsScreen: React.FC = () => {
 
   const handlePress = useCallback(
     (notification: NotificationResponseDto) => {
-      console.log(notification.entityId);
       if (!notification.readAt) markAsRead.mutate(notification.id);
+
+      if (notification.type === "INVITATION") {
+        setSelectedNotification(notification);
+        return;
+      }
+
+      console.log(notification.entityId);
     },
     [markAsRead],
   );
+
+  const handleAccept = () => {
+    if (!selectedNotification) return;
+
+    acceptInvitation.mutate(selectedNotification.entityId, {
+      onSuccess: (data) => {
+        setSelectedNotification(null);
+        navigation.navigate("SplitDetail", { splitId: data.splitId });
+      },
+      onError: (error) => {
+        setSelectedNotification(null);
+        showSnackbar({
+          message: error.response?.data?.message ?? "Failed to join split",
+          type: "error",
+        });
+      },
+    });
+  };
 
   const renderItem = ({ item }: { item: NotificationResponseDto }) => (
     <TouchableOpacity
@@ -87,6 +117,18 @@ const NotificationsScreen: React.FC = () => {
           }
         />
       )}
+
+      <ConfirmDialog
+        visible={!!selectedNotification}
+        onDismiss={() => setSelectedNotification(null)}
+        title="Join Split"
+        message={selectedNotification?.message ?? ""}
+        confirmAction={{
+          label: "Join",
+          onPress: handleAccept,
+          color: colors.emerald600,
+        }}
+      />
     </Page>
   );
 };

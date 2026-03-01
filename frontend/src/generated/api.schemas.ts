@@ -158,6 +158,10 @@ export interface InvitationResponseDto {
   createdAt: string;
 }
 
+export interface AcceptInvitationResponseDto {
+  splitId: string;
+}
+
 export interface NotificationResponseDto {
   id: string;
   title: string;
