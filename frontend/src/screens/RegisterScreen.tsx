@@ -5,22 +5,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/navigationRef";
-import { useCurrentUser, useRegister } from "../hooks/useAuth";
+import { useRegister } from "../hooks/useAuth";
+import { useRedirectIfAuthenticated } from "../hooks/useRedirectIfAuthenticated";
 import { colors } from "../theme/theme";
 
 const RegisterScreen: React.FC = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { data: user, isLoading: isCheckingAuth } = useCurrentUser();
+  useRedirectIfAuthenticated();
   const register = useRegister();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [clientError, setClientError] = useState("");
-
-  React.useEffect(() => {
-    if (user && !isCheckingAuth) navigation.replace("Home");
-  }, [user, isCheckingAuth, navigation]);
 
   const handleRegister = () => {
     setClientError("");
