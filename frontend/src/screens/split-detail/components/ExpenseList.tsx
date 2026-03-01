@@ -3,6 +3,8 @@ import { SectionList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { ActivityIndicator, Text } from "react-native-paper";
 import type { ExpenseResponseDto } from "@/generated/api.schemas";
 import { colors } from "@/theme/theme";
+import { formatAmount } from "@/utils/currencyUtils";
+import { formatSectionDate, toLocalDateKey } from "@/utils/dateUtils";
 
 interface ExpenseListProps {
   expenses: ExpenseResponseDto[];
@@ -16,70 +18,6 @@ interface Section {
   title: string;
   data: ExpenseResponseDto[];
 }
-
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  GBP: "£",
-  EUR: "€",
-  USD: "$",
-};
-
-const formatAmount = (pence: number, currency: string): string => {
-  const symbol = CURRENCY_SYMBOLS[currency] ?? currency;
-  return `${symbol}${(pence / 100).toFixed(2)}`;
-};
-
-const getOrdinalSuffix = (day: number): string => {
-  if (day >= 11 && day <= 13) return "th";
-  switch (day % 10) {
-    case 1:
-      return "st";
-    case 2:
-      return "nd";
-    case 3:
-      return "rd";
-    default:
-      return "th";
-  }
-};
-
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const formatSectionDate = (dateStr: string): string => {
-  const date = new Date(dateStr);
-  const now = new Date();
-
-  const toLocalDate = (d: Date) =>
-    new Date(d.getFullYear(), d.getMonth(), d.getDate());
-
-  const localDate = toLocalDate(date);
-  const today = toLocalDate(now);
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-
-  if (localDate.getTime() === today.getTime()) return "Today";
-  if (localDate.getTime() === yesterday.getTime()) return "Yesterday";
-
-  const day = localDate.getDate();
-  return `${day}${getOrdinalSuffix(day)} ${MONTHS[localDate.getMonth()]} ${localDate.getFullYear()}`;
-};
-
-const toLocalDateKey = (dateStr: string): string => {
-  const d = new Date(dateStr);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-};
 
 export const ExpenseList: React.FC<ExpenseListProps> = ({
   expenses,

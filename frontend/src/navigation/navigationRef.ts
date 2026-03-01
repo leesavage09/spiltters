@@ -5,6 +5,7 @@ export type RootStackParamList = {
   Register: undefined;
   Home: undefined;
   SplitDetail: { splitId: string };
+  ExpenseDetail: { splitId: string; expenseId: string };
 };
 
 export const navigationRef = createNavigationContainerRef<RootStackParamList>();

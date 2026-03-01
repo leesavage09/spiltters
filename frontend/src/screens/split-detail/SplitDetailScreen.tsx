@@ -53,8 +53,8 @@ const SplitDetailScreen: React.FC = () => {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleExpensePress = useCallback((id: string) => {
-    console.log(id);
-  }, []);
+    navigation.navigate("ExpenseDetail", { splitId: split!.id, expenseId: id });
+  }, [navigation, split]);
 
   if (isLoading || !split) return null;
 
