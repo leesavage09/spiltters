@@ -7,10 +7,7 @@ const { notificationsControllerFindAll, notificationsControllerGetUnreadCount, n
 
 const PAGE_SIZE = 20;
 
-interface ErrorResponse {
-  message: string;
-  statusCode: number;
-}
+import type { ErrorResponse } from "../types/api";
 
 export const useNotifications = () => {
   return useInfiniteQuery<PaginatedNotificationsResponseDto>({

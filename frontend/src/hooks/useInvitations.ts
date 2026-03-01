@@ -5,10 +5,7 @@ import { getInvitations } from "../generated/invitations/invitations";
 
 const { invitationsControllerCreate, invitationsControllerAccept } = getInvitations();
 
-interface ErrorResponse {
-  message: string;
-  statusCode: number;
-}
+import type { ErrorResponse } from "../types/api";
 
 export const useCreateInvitation = () => {
   return useMutation<

@@ -3,12 +3,9 @@ import type { AxiosError } from "axios";
 import type { AuthResponseDto, UpdateUserDto } from "../generated/api.schemas";
 import { getAuth } from "../generated/auth/auth";
 
-const { authControllerLogin, authControllerRegister, authControllerLogout, authControllerGetProfile, authControllerUpdateProfile } = getAuth();
+import type { ErrorResponse } from "../types/api";
 
-interface ErrorResponse {
-  message: string;
-  statusCode: number;
-}
+const { authControllerLogin, authControllerRegister, authControllerLogout, authControllerGetProfile, authControllerUpdateProfile } = getAuth();
 
 export const useCurrentUser = () => {
   return useQuery<AuthResponseDto>({

@@ -5,10 +5,7 @@ import { getSplits } from "../generated/splits/splits";
 
 const { splitsControllerFindAll, splitsControllerCreate, splitsControllerUpdate, splitsControllerDelete } = getSplits();
 
-interface ErrorResponse {
-  message: string;
-  statusCode: number;
-}
+import type { ErrorResponse } from "../types/api";
 
 export const useSplits = () => {
   return useQuery<SplitResponseDto[]>({
