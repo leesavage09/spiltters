@@ -8,7 +8,8 @@ import type {
   AuthResponseDto,
   LoginDto,
   MessageResponseDto,
-  RegisterDto
+  RegisterDto,
+  UpdateUserDto
 } from '../api.schemas';
 
 import { customInstance } from '../../api/client';
@@ -64,8 +65,22 @@ const authControllerGetProfile = (
     },
       );
     }
-  return {authControllerRegister,authControllerLogin,authControllerLogout,authControllerGetProfile}};
+  /**
+ * @summary Update current user profile
+ */
+const authControllerUpdateProfile = (
+    updateUserDto: UpdateUserDto,
+ ) => {
+      return customInstance<AuthResponseDto>(
+      {url: `/api/auth/me`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updateUserDto
+    },
+      );
+    }
+  return {authControllerRegister,authControllerLogin,authControllerLogout,authControllerGetProfile,authControllerUpdateProfile}};
 export type AuthControllerRegisterResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['authControllerRegister']>>>
 export type AuthControllerLoginResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['authControllerLogin']>>>
 export type AuthControllerLogoutResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['authControllerLogout']>>>
 export type AuthControllerGetProfileResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['authControllerGetProfile']>>>
+export type AuthControllerUpdateProfileResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['authControllerUpdateProfile']>>>

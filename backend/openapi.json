@@ -129,6 +129,36 @@
         "tags": [
           "auth"
         ]
+      },
+      "patch": {
+        "operationId": "AuthController_updateProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update current user profile",
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/api/splits": {
@@ -474,6 +504,10 @@
           },
           "email": {
             "type": "string"
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -507,6 +541,14 @@
           "message"
         ]
       },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          }
+        }
+      },
       "SplitUserResponseDto": {
         "type": "object",
         "properties": {
@@ -515,6 +557,10 @@
           },
           "email": {
             "type": "string"
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -598,6 +644,10 @@
           },
           "email": {
             "type": "string"
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -613,6 +663,10 @@
           },
           "email": {
             "type": "string"
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
           },
           "amount": {
             "type": "number",

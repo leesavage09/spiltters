@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Req,
   Res,
@@ -16,6 +17,7 @@ import { AuthResponseDto } from './dto/auth-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { MessageResponseDto } from './dto/message-response.dto';
 import { RegisterDto } from './dto/register.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import type { AuthenticatedRequest } from './interfaces/authenticated-request.interface';
 
@@ -78,8 +80,20 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get current authenticated user' })
   @ApiResponse({ status: 200, type: AuthResponseDto })
-  getProfile(@Req() req: AuthenticatedRequest): AuthResponseDto {
-    return req.user;
+  async getProfile(@Req() req: AuthenticatedRequest): Promise<AuthResponseDto> {
+    return this.authService.getProfile(req.user.id);
+  }
+
+  @Patch('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Update current user profile' })
+  @ApiBody({ type: UpdateUserDto })
+  @ApiResponse({ status: 200, type: AuthResponseDto })
+  async updateProfile(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: UpdateUserDto,
+  ): Promise<AuthResponseDto> {
+    return this.authService.updateProfile(req.user.id, dto);
   }
 
   private setTokenCookie(res: express.Response, token: string): void {

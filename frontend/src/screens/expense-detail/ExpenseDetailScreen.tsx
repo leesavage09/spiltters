@@ -15,6 +15,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog/confirmDialog";
 import { ExpenseModal } from "@/components/ui/expense-modal/expenseModal";
 import { formatAmount } from "@/utils/currencyUtils";
 import { formatFullDate } from "@/utils/dateUtils";
+import { getDisplayName } from "@/utils/displayName";
 
 const ExpenseDetailScreen: React.FC = () => {
   const navigation =
@@ -91,7 +92,7 @@ const ExpenseDetailScreen: React.FC = () => {
 
           <Text style={styles.sectionHeading}>Paid by</Text>
           <View style={styles.card}>
-            <Text style={styles.cardEmail}>{expense.paidBy.email}</Text>
+            <Text style={styles.cardEmail}>{getDisplayName(expense.paidBy)}</Text>
             <Text style={styles.cardAmount}>
               {formatAmount(expense.amount, expense.currency)}
             </Text>
@@ -100,7 +101,7 @@ const ExpenseDetailScreen: React.FC = () => {
           <Text style={styles.sectionHeading}>Participants</Text>
           {expense.shares.map((share) => (
             <View key={share.userId} style={styles.card}>
-              <Text style={styles.cardEmail}>{share.email}</Text>
+              <Text style={styles.cardEmail}>{getDisplayName(share)}</Text>
               <Text style={styles.cardAmount}>
                 {formatAmount(share.amount, expense.currency)}
               </Text>

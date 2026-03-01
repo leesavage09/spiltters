@@ -17,6 +17,8 @@ export interface RegisterDto {
 export interface AuthResponseDto {
   id: string;
   email: string;
+  /** @nullable */
+  username?: string | null;
 }
 
 export interface LoginDto {
@@ -28,9 +30,15 @@ export interface MessageResponseDto {
   message: string;
 }
 
+export interface UpdateUserDto {
+  username?: string;
+}
+
 export interface SplitUserResponseDto {
   id: string;
   email: string;
+  /** @nullable */
+  username?: string | null;
 }
 
 export interface SplitResponseDto {
@@ -57,11 +65,15 @@ export interface UpdateSplitDto {
 export interface ExpensePaidByResponseDto {
   id: string;
   email: string;
+  /** @nullable */
+  username?: string | null;
 }
 
 export interface ExpenseShareResponseDto {
   userId: string;
   email: string;
+  /** @nullable */
+  username?: string | null;
   /** Amount in pence/cents */
   amount: number;
 }

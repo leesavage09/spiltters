@@ -38,13 +38,13 @@ export class ExpensesController {
   @ApiQuery({ name: 'take', required: false, type: Number })
   @ApiResponse({ status: 200, type: PaginatedExpensesResponseDto })
   async findBySplit(
+    @Req() req: AuthenticatedRequest,
     @Param('splitId') splitId: string,
     @Query('skip') skip?: string,
     @Query('take') take?: string,
-    @Req() req?: AuthenticatedRequest,
   ): Promise<PaginatedExpensesResponseDto> {
     return this.expensesService.findBySplit(
-      req!.user.id,
+      req.user.id,
       splitId,
       parseInt(skip || '0', 10),
       parseInt(take || '20', 10),

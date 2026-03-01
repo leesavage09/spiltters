@@ -5,6 +5,7 @@ import type { ExpenseResponseDto } from "@/generated/api.schemas";
 import { colors } from "@/theme/theme";
 import { formatAmount } from "@/utils/currencyUtils";
 import { formatSectionDate, toLocalDateKey } from "@/utils/dateUtils";
+import { getDisplayName } from "@/utils/displayName";
 
 interface ExpenseListProps {
   expenses: ExpenseResponseDto[];
@@ -51,7 +52,7 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
     ({ item }: { item: ExpenseResponseDto }) => {
       const userShare = item.shares.find((s) => s.userId === currentUserId);
       const isPayer = item.paidBy.id === currentUserId;
-      const paidByLabel = isPayer ? "You paid" : `${item.paidBy.email} paid`;
+      const paidByLabel = isPayer ? "You paid" : `${getDisplayName(item.paidBy)} paid`;
 
       let lentBorrowedLabel = "";
       if (userShare) {

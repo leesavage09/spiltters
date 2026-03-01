@@ -19,4 +19,11 @@ export class UsersService {
       data: { email, password: hashedPassword },
     });
   }
+
+  async update(id: string, data: { username?: string }): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data,
+    });
+  }
 }

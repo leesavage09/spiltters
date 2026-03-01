@@ -8,11 +8,13 @@ import { useCurrentUser, useLogout } from "../hooks/useAuth";
 import { useSplits } from "../hooks/useSplits";
 import { useHealth } from "../hooks/useHealth";
 import { SplitModal } from "@/components/ui/split-modal/splitModal";
+import { UserSettingsModal } from "@/components/ui/user-settings-modal/userSettingsModal";
 import { colors } from "../theme/theme";
 import type { SplitResponseDto } from "../generated/api.schemas";
 import { getApiUrl } from "@/api/client";
 import { Fab } from "@/components/ui/fab/fab";
 import { Page } from "@/components/ui/page/page";
+import { getDisplayName } from "@/utils/displayName";
 
 const HomeScreen: React.FC = () => {
   const navigation =
@@ -22,6 +24,7 @@ const HomeScreen: React.FC = () => {
   const { data: health } = useHealth();
   const logout = useLogout();
   const [modalVisible, setModalVisible] = useState(false);
+  const [settingsVisible, setSettingsVisible] = useState(false);
 
   const handleLogout = () => {
     logout.mutate(undefined, {
@@ -48,7 +51,11 @@ const HomeScreen: React.FC = () => {
       appBarContent={
         <>
           <Appbar.Content title="Splitters" titleStyle={styles.headerTitle} />
-          <Text style={styles.userEmail}>{user?.email}</Text>
+          <TouchableOpacity onPress={() => setSettingsVisible(true)}>
+            <Text style={styles.userEmail}>
+              {user ? getDisplayName(user) : ""}
+            </Text>
+          </TouchableOpacity>
           <Appbar.Action
             icon="logout"
             onPress={handleLogout}
@@ -105,6 +112,11 @@ const HomeScreen: React.FC = () => {
           visible={modalVisible}
           onDismiss={() => setModalVisible(false)}
           mode="create"
+        />
+
+        <UserSettingsModal
+          visible={settingsVisible}
+          onDismiss={() => setSettingsVisible(false)}
         />
       </>
     </Page>

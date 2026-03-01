@@ -197,8 +197,12 @@ export class ExpensesService {
     date: Date;
     createdAt: Date;
     updatedAt: Date;
-    paidBy: { id: string; email: string };
-    shares: { userId: string; amount: number; user: { email: string } }[];
+    paidBy: { id: string; email: string; username: string | null };
+    shares: {
+      userId: string;
+      amount: number;
+      user: { email: string; username: string | null };
+    }[];
   }): ExpenseResponseDto {
     return {
       id: expense.id,
@@ -206,10 +210,15 @@ export class ExpensesService {
       amount: expense.amount,
       currency: expense.currency,
       date: expense.date,
-      paidBy: { id: expense.paidBy.id, email: expense.paidBy.email },
+      paidBy: {
+        id: expense.paidBy.id,
+        email: expense.paidBy.email,
+        username: expense.paidBy.username,
+      },
       shares: expense.shares.map((s) => ({
         userId: s.userId,
         email: s.user.email,
+        username: s.user.username,
         amount: s.amount,
       })),
       createdAt: expense.createdAt,

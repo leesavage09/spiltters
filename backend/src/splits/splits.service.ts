@@ -85,7 +85,9 @@ export class SplitsService {
       emoji: string;
       createdAt: Date;
       updatedAt: Date;
-      users: { user: { id: string; email: string } }[];
+      users: {
+        user: { id: string; email: string; username: string | null };
+      }[];
     },
     currentUserId: string,
   ): SplitResponseDto {
@@ -95,7 +97,11 @@ export class SplitsService {
       emoji: split.emoji,
       users: split.users
         .filter((su) => su.user.id !== currentUserId)
-        .map((su) => ({ id: su.user.id, email: su.user.email })),
+        .map((su) => ({
+          id: su.user.id,
+          email: su.user.email,
+          username: su.user.username,
+        })),
       createdAt: split.createdAt,
       updatedAt: split.updatedAt,
     };

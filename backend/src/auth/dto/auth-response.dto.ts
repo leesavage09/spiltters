@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class AuthResponseDto {
   @ApiProperty()
@@ -6,4 +6,7 @@ export class AuthResponseDto {
 
   @ApiProperty()
   email!: string;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  username?: string | null;
 }

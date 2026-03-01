@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import type { AuthResponseDto } from "../generated/api.schemas";
+import type { AuthResponseDto, UpdateUserDto } from "../generated/api.schemas";
 import { getAuth } from "../generated/auth/auth";
 
-const { authControllerLogin, authControllerRegister, authControllerLogout, authControllerGetProfile } = getAuth();
+const { authControllerLogin, authControllerRegister, authControllerLogout, authControllerGetProfile, authControllerUpdateProfile } = getAuth();
 
 interface ErrorResponse {
   message: string;
@@ -43,6 +43,21 @@ export const useRegister = () => {
     { email: string; password: string }
   >({
     mutationFn: authControllerRegister,
+    onSuccess: (data) => {
+      queryClient.setQueryData(["auth", "me"], data);
+    },
+  });
+};
+
+export const useUpdateProfile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    AuthResponseDto,
+    AxiosError<ErrorResponse>,
+    UpdateUserDto
+  >({
+    mutationFn: authControllerUpdateProfile,
     onSuccess: (data) => {
       queryClient.setQueryData(["auth", "me"], data);
     },

@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ExpensePaidByResponseDto {
   @ApiProperty()
@@ -6,6 +6,9 @@ export class ExpensePaidByResponseDto {
 
   @ApiProperty()
   email!: string;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  username?: string | null;
 }
 
 export class ExpenseShareResponseDto {
@@ -14,6 +17,9 @@ export class ExpenseShareResponseDto {
 
   @ApiProperty()
   email!: string;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  username?: string | null;
 
   @ApiProperty({ description: 'Amount in pence/cents' })
   amount!: number;
