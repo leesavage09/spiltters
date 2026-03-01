@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { Button, Modal, Portal, Text, TextInput } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { Modal, Portal, Text, TextInput } from "react-native-paper";
 import { useCurrentUser, useUpdateProfile } from "@/hooks/useAuth";
 import { colors } from "@/theme/theme";
+import { modalStyles } from "@/components/ui/modal-styles/modalStyles";
+import { ModalActions } from "@/components/ui/modal-styles/ModalActions";
 
 interface UserSettingsModalProps {
   visible: boolean;
@@ -33,9 +35,9 @@ export const UserSettingsModal: React.FC<UserSettingsModalProps> = ({
       <Modal
         visible={visible}
         onDismiss={onDismiss}
-        contentContainerStyle={styles.modal}
+        contentContainerStyle={modalStyles.modal}
       >
-        <Text variant="titleLarge" style={styles.title}>
+        <Text variant="titleLarge" style={modalStyles.title}>
           User Settings
         </Text>
 
@@ -45,7 +47,7 @@ export const UserSettingsModal: React.FC<UserSettingsModalProps> = ({
           label="Username (optional)"
           value={username}
           onChangeText={setUsername}
-          style={styles.input}
+          style={modalStyles.input}
           mode="outlined"
           outlineColor={colors.slate700}
           activeOutlineColor={colors.blue500}
@@ -53,54 +55,21 @@ export const UserSettingsModal: React.FC<UserSettingsModalProps> = ({
           maxLength={30}
         />
 
-        <View style={styles.actions}>
-          <Button mode="text" onPress={onDismiss} textColor={colors.slate400}>
-            Cancel
-          </Button>
-          <Button
-            mode="contained"
-            onPress={handleSave}
-            loading={updateProfile.isPending}
-            disabled={updateProfile.isPending}
-            buttonColor={colors.emerald600}
-            textColor={colors.white}
-          >
-            Save
-          </Button>
-        </View>
+        <ModalActions
+          onCancel={onDismiss}
+          onConfirm={handleSave}
+          loading={updateProfile.isPending}
+          disabled={updateProfile.isPending}
+        />
       </Modal>
     </Portal>
   );
 };
 
 const styles = StyleSheet.create({
-  modal: {
-    backgroundColor: colors.slate900,
-    margin: 24,
-    padding: 24,
-    borderRadius: 16,
-    maxWidth: 400,
-    alignSelf: "center",
-    width: "100%",
-  },
-  title: {
-    color: colors.white,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
   email: {
     color: colors.slate400,
     fontSize: 14,
     marginBottom: 16,
-  },
-  input: {
-    marginBottom: 16,
-    backgroundColor: colors.slate950,
-  },
-  actions: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: 12,
-    marginTop: 8,
   },
 });

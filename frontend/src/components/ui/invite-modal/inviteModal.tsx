@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { Button, Modal, Portal, Text, TextInput } from "react-native-paper";
+import { Modal, Portal, Text, TextInput } from "react-native-paper";
 import { useCreateInvitation } from "@/hooks/useInvitations";
 import { useSnackbar } from "@/components/ui/snackbar/snackbar";
 import { colors } from "@/theme/theme";
+import { modalStyles } from "@/components/ui/modal-styles/modalStyles";
+import { ModalActions } from "@/components/ui/modal-styles/ModalActions";
 
 interface InviteModalProps {
   visible: boolean;
@@ -55,9 +56,9 @@ export const InviteModal: React.FC<InviteModalProps> = ({
       <Modal
         visible={visible}
         onDismiss={handleDismiss}
-        contentContainerStyle={styles.modal}
+        contentContainerStyle={modalStyles.modal}
       >
-        <Text variant="titleLarge" style={styles.title}>
+        <Text variant="titleLarge" style={modalStyles.title}>
           Invite to Split
         </Text>
 
@@ -65,7 +66,7 @@ export const InviteModal: React.FC<InviteModalProps> = ({
           label="Email address"
           value={email}
           onChangeText={setEmail}
-          style={styles.input}
+          style={modalStyles.input}
           mode="outlined"
           outlineColor={colors.slate700}
           activeOutlineColor={colors.blue500}
@@ -75,53 +76,14 @@ export const InviteModal: React.FC<InviteModalProps> = ({
           autoCorrect={false}
         />
 
-        <View style={styles.actions}>
-          <Button
-            mode="text"
-            onPress={handleDismiss}
-            textColor={colors.slate400}
-          >
-            Cancel
-          </Button>
-          <Button
-            mode="contained"
-            onPress={handleInvite}
-            loading={createInvitation.isPending}
-            disabled={createInvitation.isPending || !email}
-            buttonColor={colors.emerald600}
-            textColor={colors.white}
-          >
-            Invite
-          </Button>
-        </View>
+        <ModalActions
+          onCancel={handleDismiss}
+          onConfirm={handleInvite}
+          loading={createInvitation.isPending}
+          disabled={createInvitation.isPending || !email}
+          confirmLabel="Invite"
+        />
       </Modal>
     </Portal>
   );
 };
-
-const styles = StyleSheet.create({
-  modal: {
-    backgroundColor: colors.slate900,
-    margin: 24,
-    padding: 24,
-    borderRadius: 16,
-    maxWidth: 400,
-    alignSelf: "center",
-    width: "100%",
-  },
-  title: {
-    color: colors.white,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  input: {
-    marginBottom: 16,
-    backgroundColor: colors.slate950,
-  },
-  actions: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: 12,
-    marginTop: 8,
-  },
-});

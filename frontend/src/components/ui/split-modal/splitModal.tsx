@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { Button, Modal, Portal, Text, TextInput } from "react-native-paper";
+import { Modal, Portal, Text, TextInput } from "react-native-paper";
 import { useCreateSplit, useUpdateSplit } from "@/hooks/useSplits";
 import { colors } from "@/theme/theme";
+import { modalStyles } from "@/components/ui/modal-styles/modalStyles";
+import { ModalActions } from "@/components/ui/modal-styles/ModalActions";
 
 interface SplitModalProps {
   visible: boolean;
@@ -71,9 +72,9 @@ export const SplitModal: React.FC<SplitModalProps> = ({
       <Modal
         visible={visible}
         onDismiss={handleDismiss}
-        contentContainerStyle={styles.modal}
+        contentContainerStyle={modalStyles.modal}
       >
-        <Text variant="titleLarge" style={styles.title}>
+        <Text variant="titleLarge" style={modalStyles.title}>
           {isEdit ? "Edit Split" : "Create New Split"}
         </Text>
 
@@ -81,7 +82,7 @@ export const SplitModal: React.FC<SplitModalProps> = ({
           label="Emoji"
           value={emoji}
           onChangeText={(text) => setEmoji(text.slice(0, 2))}
-          style={styles.input}
+          style={modalStyles.input}
           mode="outlined"
           outlineColor={colors.slate700}
           activeOutlineColor={colors.blue500}
@@ -93,7 +94,7 @@ export const SplitModal: React.FC<SplitModalProps> = ({
           label="Name"
           value={name}
           onChangeText={setName}
-          style={styles.input}
+          style={modalStyles.input}
           mode="outlined"
           outlineColor={colors.slate700}
           activeOutlineColor={colors.blue500}
@@ -101,53 +102,13 @@ export const SplitModal: React.FC<SplitModalProps> = ({
           maxLength={50}
         />
 
-        <View style={styles.actions}>
-          <Button
-            mode="text"
-            onPress={handleDismiss}
-            textColor={colors.slate400}
-          >
-            Cancel
-          </Button>
-          <Button
-            mode="contained"
-            onPress={handleSave}
-            loading={mutation.isPending}
-            disabled={mutation.isPending || !emoji || !name}
-            buttonColor={colors.emerald600}
-            textColor={colors.white}
-          >
-            Save
-          </Button>
-        </View>
+        <ModalActions
+          onCancel={handleDismiss}
+          onConfirm={handleSave}
+          loading={mutation.isPending}
+          disabled={mutation.isPending || !emoji || !name}
+        />
       </Modal>
     </Portal>
   );
 };
-
-const styles = StyleSheet.create({
-  modal: {
-    backgroundColor: colors.slate900,
-    margin: 24,
-    padding: 24,
-    borderRadius: 16,
-    maxWidth: 400,
-    alignSelf: "center",
-    width: "100%",
-  },
-  title: {
-    color: colors.white,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  input: {
-    marginBottom: 16,
-    backgroundColor: colors.slate950,
-  },
-  actions: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: 12,
-    marginTop: 8,
-  },
-});
