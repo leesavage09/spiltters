@@ -16,6 +16,7 @@ import { ExpenseModal } from "@/components/ui/expense-modal/expenseModal";
 import { formatAmount } from "@/utils/currencyUtils";
 import { formatFullDate } from "@/utils/dateUtils";
 import { getDisplayName } from "@/utils/displayName";
+import { flattenPages } from "@/utils/pagination";
 
 const ExpenseDetailScreen: React.FC = () => {
   const navigation =
@@ -32,9 +33,7 @@ const ExpenseDetailScreen: React.FC = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
 
   const { data: expensePages } = useExpenses(splitId);
-  const expense = expensePages?.pages
-    .flatMap((p) => p.items)
-    .find((e) => e.id === expenseId);
+  const expense = flattenPages(expensePages).find((e) => e.id === expenseId);
 
   React.useEffect(() => {
     if (expensePages && !expense) navigation.goBack();

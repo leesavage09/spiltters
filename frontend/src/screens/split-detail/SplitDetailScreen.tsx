@@ -16,6 +16,7 @@ import { SplitModal } from "@/components/ui/split-modal/splitModal";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog/confirmDialog";
 import { ExpenseModal } from "@/components/ui/expense-modal/expenseModal";
 import { InviteModal } from "@/components/ui/invite-modal/inviteModal";
+import { flattenPages, useLoadMore } from "@/utils/pagination";
 import { ExpenseList } from "./components/ExpenseList";
 
 const SplitDetailScreen: React.FC = () => {
@@ -42,7 +43,7 @@ const SplitDetailScreen: React.FC = () => {
   } = useExpenses(split?.id ?? "");
 
   const expenses = useMemo(
-    () => expensePages?.pages.flatMap((p) => p.items) ?? [],
+    () => flattenPages(expensePages),
     [expensePages],
   );
 
@@ -50,9 +51,7 @@ const SplitDetailScreen: React.FC = () => {
     if (!isLoading && !split) navigation.replace("Home");
   }, [isLoading, split, navigation]);
 
-  const handleEndReached = useCallback(() => {
-    if (hasNextPage && !isFetchingNextPage) fetchNextPage();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  const handleEndReached = useLoadMore(hasNextPage, isFetchingNextPage, fetchNextPage);
 
   const handleExpensePress = useCallback((id: string) => {
     navigation.navigate("ExpenseDetail", { splitId: split!.id, expenseId: id });

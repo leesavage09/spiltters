@@ -3,11 +3,10 @@ import type { AxiosError } from "axios";
 import type { NotificationResponseDto, PaginatedNotificationsResponseDto, UnreadCountResponseDto } from "../generated/api.schemas";
 import { getNotifications } from "../generated/notifications/notifications";
 
-const { notificationsControllerFindAll, notificationsControllerGetUnreadCount, notificationsControllerMarkAsRead } = getNotifications();
-
-const PAGE_SIZE = 20;
-
 import type { ErrorResponse } from "../types/api";
+import { PAGE_SIZE } from "../utils/pagination";
+
+const { notificationsControllerFindAll, notificationsControllerGetUnreadCount, notificationsControllerMarkAsRead } = getNotifications();
 
 export const useNotifications = () => {
   return useInfiniteQuery<PaginatedNotificationsResponseDto>({

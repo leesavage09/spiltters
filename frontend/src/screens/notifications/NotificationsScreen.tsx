@@ -12,6 +12,7 @@ import { colors } from "../../theme/theme";
 import { Page } from "@/components/ui/page/page";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog/confirmDialog";
 import { useSnackbar } from "@/components/ui/snackbar/snackbar";
+import { flattenPages, useLoadMore } from "@/utils/pagination";
 
 const NotificationsScreen: React.FC = () => {
   const navigation =
@@ -29,13 +30,11 @@ const NotificationsScreen: React.FC = () => {
   const [selectedNotification, setSelectedNotification] = useState<NotificationResponseDto | null>(null);
 
   const notifications = useMemo(
-    () => notificationPages?.pages.flatMap((p) => p.items) ?? [],
+    () => flattenPages(notificationPages),
     [notificationPages],
   );
 
-  const handleEndReached = useCallback(() => {
-    if (hasNextPage && !isFetchingNextPage) fetchNextPage();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  const handleEndReached = useLoadMore(hasNextPage, isFetchingNextPage, fetchNextPage);
 
   const handlePress = useCallback(
     (notification: NotificationResponseDto) => {

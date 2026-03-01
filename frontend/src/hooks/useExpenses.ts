@@ -3,11 +3,10 @@ import type { AxiosError } from "axios";
 import type { CreateExpenseDto, ExpenseResponseDto, MessageResponseDto, PaginatedExpensesResponseDto, UpdateExpenseDto } from "../generated/api.schemas";
 import { getExpenses } from "../generated/expenses/expenses";
 
-const { expensesControllerFindBySplit, expensesControllerCreate, expensesControllerUpdate, expensesControllerDelete } = getExpenses();
-
-const PAGE_SIZE = 20;
-
 import type { ErrorResponse } from "../types/api";
+import { PAGE_SIZE } from "../utils/pagination";
+
+const { expensesControllerFindBySplit, expensesControllerCreate, expensesControllerUpdate, expensesControllerDelete } = getExpenses();
 
 export const useExpenses = (splitId: string) => {
   return useInfiniteQuery<PaginatedExpensesResponseDto>({
