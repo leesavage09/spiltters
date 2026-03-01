@@ -17,13 +17,7 @@ export class ExpensesService {
     skip: number,
     take: number,
   ): Promise<PaginatedExpensesResponseDto> {
-    const split = await this.prisma.split.findUnique({
-      where: { id: splitId },
-      include: { users: true },
-    });
-
-    if (!split || !split.users.some((u) => u.userId === userId))
-      throw new UserSafeException('Split not found');
+    await this.assertSplitMembership(userId, splitId);
 
     const [expenses, total] = await Promise.all([
       this.prisma.expense.findMany({
@@ -51,29 +45,8 @@ export class ExpensesService {
     splitId: string,
     dto: CreateExpenseDto,
   ): Promise<ExpenseResponseDto> {
-    const split = await this.prisma.split.findUnique({
-      where: { id: splitId },
-      include: { users: true },
-    });
-
-    if (!split || !split.users.some((u) => u.userId === userId))
-      throw new UserSafeException('Split not found');
-
-    const memberIds = new Set(split.users.map((u) => u.userId));
-
-    if (!memberIds.has(dto.paidBy))
-      throw new UserSafeException('Paid-by user is not a member of this split');
-
-    for (const share of dto.shares) {
-      if (!memberIds.has(share.userId))
-        throw new UserSafeException(
-          `User ${share.userId} is not a member of this split`,
-        );
-    }
-
-    const sharesTotal = dto.shares.reduce((sum, s) => sum + s.amount, 0);
-    if (sharesTotal !== dto.amount)
-      throw new UserSafeException('Shares must sum to the total amount');
+    const split = await this.assertSplitMembership(userId, splitId);
+    this.validateExpensePayload(dto, split);
 
     const expense = await this.prisma.expense.create({
       data: {
@@ -105,36 +78,9 @@ export class ExpensesService {
     expenseId: string,
     dto: UpdateExpenseDto,
   ): Promise<ExpenseResponseDto> {
-    const split = await this.prisma.split.findUnique({
-      where: { id: splitId },
-      include: { users: true },
-    });
-
-    if (!split || !split.users.some((u) => u.userId === userId))
-      throw new UserSafeException('Split not found');
-
-    const existing = await this.prisma.expense.findUnique({
-      where: { id: expenseId },
-    });
-
-    if (!existing || existing.splitId !== splitId)
-      throw new UserSafeException('Expense not found');
-
-    const memberIds = new Set(split.users.map((u) => u.userId));
-
-    if (!memberIds.has(dto.paidBy))
-      throw new UserSafeException('Paid-by user is not a member of this split');
-
-    for (const share of dto.shares) {
-      if (!memberIds.has(share.userId))
-        throw new UserSafeException(
-          `User ${share.userId} is not a member of this split`,
-        );
-    }
-
-    const sharesTotal = dto.shares.reduce((sum, s) => sum + s.amount, 0);
-    if (sharesTotal !== dto.amount)
-      throw new UserSafeException('Shares must sum to the total amount');
+    const split = await this.assertSplitMembership(userId, splitId);
+    await this.assertExpenseExists(expenseId, splitId);
+    this.validateExpensePayload(dto, split);
 
     const expense = await this.prisma.$transaction(async (tx) => {
       await tx.expenseShare.deleteMany({ where: { expenseId } });
@@ -169,6 +115,15 @@ export class ExpensesService {
     splitId: string,
     expenseId: string,
   ): Promise<MessageResponseDto> {
+    await this.assertSplitMembership(userId, splitId);
+    await this.assertExpenseExists(expenseId, splitId);
+
+    await this.prisma.expense.delete({ where: { id: expenseId } });
+
+    return { message: 'Expense deleted' };
+  }
+
+  private async assertSplitMembership(userId: string, splitId: string) {
     const split = await this.prisma.split.findUnique({
       where: { id: splitId },
       include: { users: true },
@@ -177,6 +132,10 @@ export class ExpensesService {
     if (!split || !split.users.some((u) => u.userId === userId))
       throw new UserSafeException('Split not found');
 
+    return split;
+  }
+
+  private async assertExpenseExists(expenseId: string, splitId: string) {
     const existing = await this.prisma.expense.findUnique({
       where: { id: expenseId },
     });
@@ -184,9 +143,28 @@ export class ExpensesService {
     if (!existing || existing.splitId !== splitId)
       throw new UserSafeException('Expense not found');
 
-    await this.prisma.expense.delete({ where: { id: expenseId } });
+    return existing;
+  }
 
-    return { message: 'Expense deleted' };
+  private validateExpensePayload(
+    dto: CreateExpenseDto | UpdateExpenseDto,
+    split: { users: { userId: string }[] },
+  ) {
+    const memberIds = new Set(split.users.map((u) => u.userId));
+
+    if (!memberIds.has(dto.paidBy))
+      throw new UserSafeException('Paid-by user is not a member of this split');
+
+    for (const share of dto.shares) {
+      if (!memberIds.has(share.userId))
+        throw new UserSafeException(
+          `User ${share.userId} is not a member of this split`,
+        );
+    }
+
+    const sharesTotal = dto.shares.reduce((sum, s) => sum + s.amount, 0);
+    if (sharesTotal !== dto.amount)
+      throw new UserSafeException('Shares must sum to the total amount');
   }
 
   private toResponseDto(expense: {
