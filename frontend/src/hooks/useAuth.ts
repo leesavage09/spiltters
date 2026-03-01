@@ -70,8 +70,7 @@ export const useLogout = () => {
   return useMutation({
     mutationFn: authControllerLogout,
     onSuccess: () => {
-      queryClient.setQueryData(["auth", "me"], null);
-      queryClient.invalidateQueries({ queryKey: ["auth"] }).catch(() => {});
+      queryClient.clear();
     },
   });
 };
