@@ -1,12 +1,3 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { UserResponseDto } from '../../common/dto/user-response.dto';
 
-export class SplitUserResponseDto {
-  @ApiProperty()
-  id!: string;
-
-  @ApiProperty()
-  email!: string;
-
-  @ApiPropertyOptional({ type: String, nullable: true })
-  username?: string | null;
-}
+export class SplitUserResponseDto extends UserResponseDto {}
