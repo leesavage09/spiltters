@@ -145,7 +145,46 @@ export interface UpdateExpenseDto {
   shares: ExpenseShareDto[];
 }
 
+export interface CreateInvitationDto {
+  email: string;
+  splitId: string;
+}
+
+export interface InvitationResponseDto {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  splitId: string;
+  createdAt: string;
+}
+
+export interface NotificationResponseDto {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  entityId: string;
+  /** @nullable */
+  readAt?: string | null;
+  createdAt: string;
+}
+
+export interface PaginatedNotificationsResponseDto {
+  items: NotificationResponseDto[];
+  total: number;
+  hasMore: boolean;
+}
+
+export interface UnreadCountResponseDto {
+  count: number;
+}
+
 export type ExpensesControllerFindBySplitParams = {
+skip?: number;
+take?: number;
+};
+
+export type NotificationsControllerFindAllParams = {
 skip?: number;
 take?: number;
 };

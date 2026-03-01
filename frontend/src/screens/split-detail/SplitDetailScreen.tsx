@@ -15,6 +15,7 @@ import { useSnackbar } from "@/components/ui/snackbar/snackbar";
 import { SplitModal } from "@/components/ui/split-modal/splitModal";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog/confirmDialog";
 import { ExpenseModal } from "@/components/ui/expense-modal/expenseModal";
+import { InviteModal } from "@/components/ui/invite-modal/inviteModal";
 import { ExpenseList } from "./components/ExpenseList";
 
 const SplitDetailScreen: React.FC = () => {
@@ -28,6 +29,7 @@ const SplitDetailScreen: React.FC = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
   const [expenseModalVisible, setExpenseModalVisible] = useState(false);
+  const [inviteModalVisible, setInviteModalVisible] = useState(false);
   const { showSnackbar } = useSnackbar();
 
   const split = splits?.find((s) => s.id === route.params.splitId);
@@ -93,6 +95,14 @@ const SplitDetailScreen: React.FC = () => {
             <Menu.Item
               onPress={() => {
                 setMenuVisible(false);
+                setInviteModalVisible(true);
+              }}
+              title="Invite"
+              titleStyle={styles.menuItemText}
+            />
+            <Menu.Item
+              onPress={() => {
+                setMenuVisible(false);
                 setDeleteDialogVisible(true);
               }}
               title="Delete"
@@ -145,6 +155,12 @@ const SplitDetailScreen: React.FC = () => {
           mode="edit"
           splitId={split.id}
           initialValues={{ emoji: split.emoji, name: split.name }}
+        />
+
+        <InviteModal
+          visible={inviteModalVisible}
+          onDismiss={() => setInviteModalVisible(false)}
+          splitId={split.id}
         />
 
         {user && (

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Appbar, Text } from "react-native-paper";
+import { Appbar, Badge, Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/navigationRef";
@@ -15,6 +15,7 @@ import { getApiUrl } from "@/api/client";
 import { Fab } from "@/components/ui/fab/fab";
 import { Page } from "@/components/ui/page/page";
 import { getDisplayName } from "@/utils/displayName";
+import { useUnreadNotificationCount } from "../hooks/useNotifications";
 
 const HomeScreen: React.FC = () => {
   const navigation =
@@ -22,6 +23,7 @@ const HomeScreen: React.FC = () => {
   const { data: user } = useCurrentUser();
   const { data: splits, isLoading: splitsLoading } = useSplits();
   const { data: health } = useHealth();
+  const { data: unreadCount } = useUnreadNotificationCount();
   const logout = useLogout();
   const [modalVisible, setModalVisible] = useState(false);
   const [settingsVisible, setSettingsVisible] = useState(false);
@@ -51,6 +53,18 @@ const HomeScreen: React.FC = () => {
       appBarContent={
         <>
           <Appbar.Content title="Splitters" titleStyle={styles.headerTitle} />
+          <View style={styles.bellContainer}>
+            <Appbar.Action
+              icon="bell-outline"
+              onPress={() => navigation.navigate("Notifications")}
+              iconColor={colors.slate400}
+            />
+            {unreadCount?.count ? (
+              <Badge style={styles.badge} size={18}>
+                {unreadCount.count}
+              </Badge>
+            ) : null}
+          </View>
           <TouchableOpacity onPress={() => setSettingsVisible(true)}>
             <Text style={styles.userEmail}>
               {user ? getDisplayName(user) : ""}
@@ -193,6 +207,15 @@ const styles = StyleSheet.create({
     color: colors.slate400,
     textAlign: "center",
     marginTop: 32,
+  },
+  bellContainer: {
+    position: "relative" as const,
+  },
+  badge: {
+    position: "absolute" as const,
+    top: 4,
+    right: 4,
+    backgroundColor: colors.red500,
   },
 });
 

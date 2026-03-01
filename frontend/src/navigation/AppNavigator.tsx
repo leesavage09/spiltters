@@ -6,6 +6,7 @@ import RegisterScreen from "../screens/RegisterScreen";
 import HomeScreen from "../screens/HomeScreen";
 import SplitDetailScreen from "../screens/split-detail/SplitDetailScreen";
 import ExpenseDetailScreen from "../screens/expense-detail/ExpenseDetailScreen";
+import NotificationsScreen from "../screens/notifications/NotificationsScreen";
 import ProtectedRoute from "../components/ProtectedRoute";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -28,6 +29,12 @@ const ProtectedExpenseDetail: React.FC = () => (
   </ProtectedRoute>
 );
 
+const ProtectedNotifications: React.FC = () => (
+  <ProtectedRoute>
+    <NotificationsScreen />
+  </ProtectedRoute>
+);
+
 const AppNavigator: React.FC = () => {
   return (
     <Stack.Navigator
@@ -42,6 +49,7 @@ const AppNavigator: React.FC = () => {
       <Stack.Screen name="Home" component={ProtectedHome} />
       <Stack.Screen name="SplitDetail" component={ProtectedSplitDetail} />
       <Stack.Screen name="ExpenseDetail" component={ProtectedExpenseDetail} />
+      <Stack.Screen name="Notifications" component={ProtectedNotifications} />
     </Stack.Navigator>
   );
 };

@@ -6,6 +6,7 @@ export type RootStackParamList = {
   Home: undefined;
   SplitDetail: { splitId: string };
   ExpenseDetail: { splitId: string; expenseId: string };
+  Notifications: undefined;
 };
 
 export const navigationRef = createNavigationContainerRef<RootStackParamList>();
