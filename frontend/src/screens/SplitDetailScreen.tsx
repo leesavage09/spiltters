@@ -9,6 +9,7 @@ import type { RootStackParamList } from "../navigation/navigationRef";
 import { useDeleteSplit, useSplits } from "../hooks/useSplits";
 import { colors } from "../theme/theme";
 import { Fab } from "@/components/ui/fab/fab";
+import { Page } from "@/components/ui/page/page";
 
 const SplitDetailScreen: React.FC = () => {
   const navigation =
@@ -28,72 +29,76 @@ const SplitDetailScreen: React.FC = () => {
   if (isLoading || !split) return null;
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
-      <Appbar.Header style={styles.header}>
-        <Appbar.BackAction
-          onPress={() => navigation.goBack()}
-          iconColor={colors.white}
-        />
-        <Appbar.Content
-          title={`${split.emoji} ${split.name}`}
-          titleStyle={styles.headerTitle}
-        />
-        <Menu
-          visible={menuVisible}
-          onDismiss={() => setMenuVisible(false)}
-          anchor={
-            <Appbar.Action
-              icon="dots-vertical"
-              onPress={() => setMenuVisible(true)}
-              iconColor={colors.white}
+    <Page
+      appBarContent={
+        <>
+          <Appbar.BackAction
+            onPress={() => navigation.goBack()}
+            iconColor={colors.white}
+          />
+          <Appbar.Content
+            title={`${split.emoji} ${split.name}`}
+            titleStyle={styles.headerTitle}
+          />
+          <Menu
+            visible={menuVisible}
+            onDismiss={() => setMenuVisible(false)}
+            anchor={
+              <Appbar.Action
+                icon="dots-vertical"
+                onPress={() => setMenuVisible(true)}
+                iconColor={colors.white}
+              />
+            }
+            contentStyle={styles.menuContent}
+          >
+            <Menu.Item
+              onPress={() => {
+                console.log("Edit split:", split.id);
+                setMenuVisible(false);
+              }}
+              title="Edit"
+              titleStyle={styles.menuItemText}
             />
-          }
-          contentStyle={styles.menuContent}
+            <Menu.Item
+              onPress={() => {
+                setMenuVisible(false);
+                deleteSplit.mutate(split.id, {
+                  onSuccess: () => navigation.replace("Home"),
+                  onError: (error) => {
+                    setSnackbarMessage(
+                      error.response?.data?.message ?? "Failed to delete split",
+                    );
+                  },
+                });
+              }}
+              title="Delete"
+              titleStyle={styles.menuItemTextDestructive}
+            />
+          </Menu>
+        </>
+      }
+    >
+      <>
+        <View style={styles.content}>
+          <Text style={styles.placeholder}>Split details coming soon...</Text>
+        </View>
+
+        <Fab
+          icon="plus"
+          label="Add Expense"
+          onPress={() => console.log("Add expense to split:", split.id)}
+        />
+        <Snackbar
+          visible={!!snackbarMessage}
+          onDismiss={() => setSnackbarMessage("")}
+          duration={4000000}
+          style={styles.snackbar}
         >
-          <Menu.Item
-            onPress={() => {
-              console.log("Edit split:", split.id);
-              setMenuVisible(false);
-            }}
-            title="Edit"
-            titleStyle={styles.menuItemText}
-          />
-          <Menu.Item
-            onPress={() => {
-              setMenuVisible(false);
-              deleteSplit.mutate(split.id, {
-                onSuccess: () => navigation.replace("Home"),
-                onError: (error) => {
-                  setSnackbarMessage(
-                    error.response?.data?.message ?? "Failed to delete split",
-                  );
-                },
-              });
-            }}
-            title="Delete"
-            titleStyle={styles.menuItemTextDestructive}
-          />
-        </Menu>
-      </Appbar.Header>
-
-      <View style={styles.content}>
-        <Text style={styles.placeholder}>Split details coming soon...</Text>
-      </View>
-
-      <Fab
-        icon="plus"
-        label="Add Expense"
-        onPress={() => console.log("Add expense to split:", split.id)}
-      />
-      <Snackbar
-        visible={!!snackbarMessage}
-        onDismiss={() => setSnackbarMessage("")}
-        duration={4000}
-        style={styles.snackbar}
-      >
-        {snackbarMessage}
-      </Snackbar>
-    </SafeAreaView>
+          {snackbarMessage}
+        </Snackbar>
+      </>
+    </Page>
   );
 };
 

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Appbar, Button, Text } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Appbar, Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/navigationRef";
@@ -13,6 +12,7 @@ import { colors } from "../theme/theme";
 import type { SplitResponseDto } from "../generated/api.schemas";
 import { getApiUrl } from "@/api/client";
 import { Fab } from "@/components/ui/fab/fab";
+import { Page } from "@/components/ui/page/page";
 
 const HomeScreen: React.FC = () => {
   const navigation =
@@ -44,18 +44,20 @@ const HomeScreen: React.FC = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
-      <Appbar.Header style={styles.header}>
-        <Appbar.Content title="Splitters" titleStyle={styles.headerTitle} />
-        <Text style={styles.userEmail}>{user?.email}</Text>
-        <Appbar.Action
-          icon="logout"
-          onPress={handleLogout}
-          iconColor={colors.slate400}
-        />
-      </Appbar.Header>
-
-      <View style={styles.content}>
+    <Page
+      appBarContent={
+        <>
+          <Appbar.Content title="Splitters" titleStyle={styles.headerTitle} />
+          <Text style={styles.userEmail}>{user?.email}</Text>
+          <Appbar.Action
+            icon="logout"
+            onPress={handleLogout}
+            iconColor={colors.slate400}
+          />
+        </>
+      }
+    >
+      <>
         <View style={styles.healthRow}>
           <View
             style={[
@@ -92,47 +94,32 @@ const HomeScreen: React.FC = () => {
             contentContainerStyle={styles.list}
           />
         )}
-      </View>
 
-      <Fab
-        icon="plus"
-        label="Create new split"
-        onPress={() => setModalVisible(true)}
-      />
+        <Fab
+          icon="plus"
+          label="Create new split"
+          onPress={() => setModalVisible(true)}
+        />
 
-      <CreateSplitModal
-        visible={modalVisible}
-        onDismiss={() => setModalVisible(false)}
-      />
-    </SafeAreaView>
+        <CreateSplitModal
+          visible={modalVisible}
+          onDismiss={() => setModalVisible(false)}
+        />
+      </>
+    </Page>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.slate950,
-  },
-  header: {
-    backgroundColor: colors.slate900,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.slate800,
-  },
   headerTitle: {
     color: colors.white,
     fontWeight: "bold",
+    marginLeft: 10,
   },
   userEmail: {
     color: colors.slate400,
     fontSize: 12,
     marginRight: 4,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 16,
-    maxWidth: 600,
-    width: "100%",
-    alignSelf: "center",
   },
   healthRow: {
     flexDirection: "row",
