@@ -3,10 +3,46 @@ import { PrismaService } from '../prisma/prisma.service';
 import { UserSafeException } from 'src/common/errors/useSafeError';
 import type { CreateExpenseDto } from './dto/create-expense.dto';
 import type { ExpenseResponseDto } from './dto/expense-response.dto';
+import type { PaginatedExpensesResponseDto } from './dto/paginated-expenses-response.dto';
 
 @Injectable()
 export class ExpensesService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async findBySplit(
+    userId: string,
+    splitId: string,
+    skip: number,
+    take: number,
+  ): Promise<PaginatedExpensesResponseDto> {
+    const split = await this.prisma.split.findUnique({
+      where: { id: splitId },
+      include: { users: true },
+    });
+
+    if (!split || !split.users.some((u) => u.userId === userId))
+      throw new UserSafeException('Split not found');
+
+    const [expenses, total] = await Promise.all([
+      this.prisma.expense.findMany({
+        where: { splitId },
+        orderBy: { date: 'desc' },
+        skip,
+        take,
+        include: {
+          paidBy: true,
+          shares: { include: { user: true } },
+        },
+      }),
+      this.prisma.expense.count({ where: { splitId } }),
+    ]);
+
+    return {
+      items: expenses.map((e) => this.toResponseDto(e)),
+      total,
+      hasMore: skip + take < total,
+    };
+  }
 
   async create(
     userId: string,

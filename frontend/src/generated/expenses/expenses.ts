@@ -6,7 +6,9 @@
  */
 import type {
   CreateExpenseDto,
-  ExpenseResponseDto
+  ExpenseResponseDto,
+  ExpensesControllerFindBySplitParams,
+  PaginatedExpensesResponseDto
 } from '../api.schemas';
 
 import { customInstance } from '../../api/client';
@@ -15,6 +17,19 @@ import { customInstance } from '../../api/client';
 
   export const getExpenses = () => {
 /**
+ * @summary List expenses for a split
+ */
+const expensesControllerFindBySplit = (
+    splitId: string,
+    params?: ExpensesControllerFindBySplitParams,
+ ) => {
+      return customInstance<PaginatedExpensesResponseDto>(
+      {url: `/api/splits/${splitId}/expenses`, method: 'GET',
+        params
+    },
+      );
+    }
+  /**
  * @summary Create an expense in a split
  */
 const expensesControllerCreate = (
@@ -28,5 +43,6 @@ const expensesControllerCreate = (
     },
       );
     }
-  return {expensesControllerCreate}};
+  return {expensesControllerFindBySplit,expensesControllerCreate}};
+export type ExpensesControllerFindBySplitResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getExpenses>['expensesControllerFindBySplit']>>>
 export type ExpensesControllerCreateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getExpenses>['expensesControllerCreate']>>>

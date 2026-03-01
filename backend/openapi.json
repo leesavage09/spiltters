@@ -257,6 +257,51 @@
       }
     },
     "/api/splits/{splitId}/expenses": {
+      "get": {
+        "operationId": "ExpensesController_findBySplit",
+        "parameters": [
+          {
+            "name": "splitId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "skip",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "take",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedExpensesResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List expenses for a split",
+        "tags": [
+          "expenses"
+        ]
+      },
       "post": {
         "operationId": "ExpensesController_create",
         "parameters": [
@@ -459,71 +504,6 @@
           }
         }
       },
-      "ExpenseShareDto": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string",
-            "example": "clxyz123"
-          },
-          "amount": {
-            "type": "number",
-            "example": 1250,
-            "description": "Amount in pence/cents"
-          }
-        },
-        "required": [
-          "userId",
-          "amount"
-        ]
-      },
-      "CreateExpenseDto": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "example": "Friday dinner",
-            "maxLength": 200
-          },
-          "amount": {
-            "type": "number",
-            "example": 1250,
-            "description": "Total amount in pence/cents"
-          },
-          "currency": {
-            "type": "string",
-            "example": "GBP",
-            "enum": [
-              "GBP",
-              "EUR",
-              "USD"
-            ]
-          },
-          "date": {
-            "type": "string",
-            "example": "2026-03-01T12:00:00.000Z"
-          },
-          "paidBy": {
-            "type": "string",
-            "example": "clxyz123",
-            "description": "User ID of who paid"
-          },
-          "shares": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ExpenseShareDto"
-            }
-          }
-        },
-        "required": [
-          "title",
-          "amount",
-          "currency",
-          "date",
-          "paidBy",
-          "shares"
-        ]
-      },
       "ExpensePaidByResponseDto": {
         "type": "object",
         "properties": {
@@ -607,6 +587,93 @@
           "shares",
           "createdAt",
           "updatedAt"
+        ]
+      },
+      "PaginatedExpensesResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExpenseResponseDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "hasMore"
+        ]
+      },
+      "ExpenseShareDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "clxyz123"
+          },
+          "amount": {
+            "type": "number",
+            "example": 1250,
+            "description": "Amount in pence/cents"
+          }
+        },
+        "required": [
+          "userId",
+          "amount"
+        ]
+      },
+      "CreateExpenseDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Friday dinner",
+            "maxLength": 200
+          },
+          "amount": {
+            "type": "number",
+            "example": 1250,
+            "description": "Total amount in pence/cents"
+          },
+          "currency": {
+            "type": "string",
+            "example": "GBP",
+            "enum": [
+              "GBP",
+              "EUR",
+              "USD"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-03-01T12:00:00.000Z"
+          },
+          "paidBy": {
+            "type": "string",
+            "example": "clxyz123",
+            "description": "User ID of who paid"
+          },
+          "shares": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExpenseShareDto"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "amount",
+          "currency",
+          "date",
+          "paidBy",
+          "shares"
         ]
       }
     }

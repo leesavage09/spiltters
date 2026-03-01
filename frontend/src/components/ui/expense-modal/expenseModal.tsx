@@ -56,7 +56,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
   onSuccess,
   onError,
 }) => {
-  const createExpense = useCreateExpense();
+  const createExpense = useCreateExpense(splitId);
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [paidBy, setPaidBy] = useState(currentUserId);

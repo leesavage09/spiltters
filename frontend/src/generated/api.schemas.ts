@@ -54,6 +54,37 @@ export interface UpdateSplitDto {
   emoji?: string;
 }
 
+export interface ExpensePaidByResponseDto {
+  id: string;
+  email: string;
+}
+
+export interface ExpenseShareResponseDto {
+  userId: string;
+  email: string;
+  /** Amount in pence/cents */
+  amount: number;
+}
+
+export interface ExpenseResponseDto {
+  id: string;
+  title: string;
+  /** Total amount in pence/cents */
+  amount: number;
+  currency: string;
+  date: string;
+  paidBy: ExpensePaidByResponseDto;
+  shares: ExpenseShareResponseDto[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PaginatedExpensesResponseDto {
+  items: ExpenseResponseDto[];
+  total: number;
+  hasMore: boolean;
+}
+
 export interface ExpenseShareDto {
   userId: string;
   /** Amount in pence/cents */
@@ -81,28 +112,8 @@ export interface CreateExpenseDto {
   shares: ExpenseShareDto[];
 }
 
-export interface ExpensePaidByResponseDto {
-  id: string;
-  email: string;
-}
-
-export interface ExpenseShareResponseDto {
-  userId: string;
-  email: string;
-  /** Amount in pence/cents */
-  amount: number;
-}
-
-export interface ExpenseResponseDto {
-  id: string;
-  title: string;
-  /** Total amount in pence/cents */
-  amount: number;
-  currency: string;
-  date: string;
-  paidBy: ExpensePaidByResponseDto;
-  shares: ExpenseShareResponseDto[];
-  createdAt: string;
-  updatedAt: string;
-}
+export type ExpensesControllerFindBySplitParams = {
+skip?: number;
+take?: number;
+};
 
