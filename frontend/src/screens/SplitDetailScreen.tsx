@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { Appbar, FAB, Menu, Text } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Appbar, Menu, Text } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RouteProp } from "@react-navigation/native";
@@ -12,6 +11,7 @@ import { Fab } from "@/components/ui/fab/fab";
 import { Page } from "@/components/ui/page/page";
 import { useSnackbar } from "@/components/ui/snackbar/snackbar";
 import { SplitModal } from "@/components/ui/split-modal/splitModal";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog/confirmDialog";
 
 const SplitDetailScreen: React.FC = () => {
   const navigation =
@@ -21,6 +21,7 @@ const SplitDetailScreen: React.FC = () => {
   const deleteSplit = useDeleteSplit();
   const [menuVisible, setMenuVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
   const { showSnackbar } = useSnackbar();
 
   const split = splits?.find((s) => s.id === route.params.splitId);
@@ -66,15 +67,7 @@ const SplitDetailScreen: React.FC = () => {
             <Menu.Item
               onPress={() => {
                 setMenuVisible(false);
-                deleteSplit.mutate(split.id, {
-                  onSuccess: () => navigation.replace("Home"),
-                  onError: (error) => {
-                    showSnackbar({
-                      message: error.response?.data?.message ?? "Failed to delete split",
-                      type: "error",
-                    });
-                  },
-                });
+                setDeleteDialogVisible(true);
               }}
               title="Delete"
               titleStyle={styles.menuItemTextDestructive}
@@ -92,6 +85,28 @@ const SplitDetailScreen: React.FC = () => {
           icon="plus"
           label="Add Expense"
           onPress={() => console.log("Add expense to split:", split.id)}
+        />
+
+        <ConfirmDialog
+          visible={deleteDialogVisible}
+          onDismiss={() => setDeleteDialogVisible(false)}
+          title="Delete Split"
+          message="Are you sure you want to delete this split?"
+          confirmAction={{
+            label: "Delete",
+            onPress: () => {
+              setDeleteDialogVisible(false);
+              deleteSplit.mutate(split.id, {
+                onSuccess: () => navigation.replace("Home"),
+                onError: (error) => {
+                  showSnackbar({
+                    message: error.response?.data?.message ?? "Failed to delete split",
+                    type: "error",
+                  });
+                },
+              });
+            },
+          }}
         />
 
         <SplitModal
