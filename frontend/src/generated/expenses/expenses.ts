@@ -8,7 +8,9 @@ import type {
   CreateExpenseDto,
   ExpenseResponseDto,
   ExpensesControllerFindBySplitParams,
-  PaginatedExpensesResponseDto
+  MessageResponseDto,
+  PaginatedExpensesResponseDto,
+  UpdateExpenseDto
 } from '../api.schemas';
 
 import { customInstance } from '../../api/client';
@@ -43,6 +45,35 @@ const expensesControllerCreate = (
     },
       );
     }
-  return {expensesControllerFindBySplit,expensesControllerCreate}};
+  /**
+ * @summary Update an expense
+ */
+const expensesControllerUpdate = (
+    splitId: string,
+    id: string,
+    updateExpenseDto: UpdateExpenseDto,
+ ) => {
+      return customInstance<ExpenseResponseDto>(
+      {url: `/api/splits/${splitId}/expenses/${id}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updateExpenseDto
+    },
+      );
+    }
+  /**
+ * @summary Delete an expense
+ */
+const expensesControllerDelete = (
+    splitId: string,
+    id: string,
+ ) => {
+      return customInstance<MessageResponseDto>(
+      {url: `/api/splits/${splitId}/expenses/${id}`, method: 'DELETE'
+    },
+      );
+    }
+  return {expensesControllerFindBySplit,expensesControllerCreate,expensesControllerUpdate,expensesControllerDelete}};
 export type ExpensesControllerFindBySplitResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getExpenses>['expensesControllerFindBySplit']>>>
 export type ExpensesControllerCreateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getExpenses>['expensesControllerCreate']>>>
+export type ExpensesControllerUpdateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getExpenses>['expensesControllerUpdate']>>>
+export type ExpensesControllerDeleteResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getExpenses>['expensesControllerDelete']>>>

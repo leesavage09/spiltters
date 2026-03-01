@@ -112,6 +112,27 @@ export interface CreateExpenseDto {
   shares: ExpenseShareDto[];
 }
 
+export type UpdateExpenseDtoCurrency = typeof UpdateExpenseDtoCurrency[keyof typeof UpdateExpenseDtoCurrency];
+
+
+export const UpdateExpenseDtoCurrency = {
+  GBP: 'GBP',
+  EUR: 'EUR',
+  USD: 'USD',
+} as const;
+
+export interface UpdateExpenseDto {
+  /** @maxLength 200 */
+  title: string;
+  /** Total amount in pence/cents */
+  amount: number;
+  currency: UpdateExpenseDtoCurrency;
+  date: string;
+  /** User ID of who paid */
+  paidBy: string;
+  shares: ExpenseShareDto[];
+}
+
 export type ExpensesControllerFindBySplitParams = {
 skip?: number;
 take?: number;

@@ -4,12 +4,21 @@ import { Button, Modal, Portal, Text, TextInput } from "react-native-paper";
 import { Dropdown } from "react-native-paper-dropdown";
 import { DatePickerInput } from "react-native-paper-dates";
 import { colors } from "@/theme/theme";
-import { useCreateExpense } from "@/hooks/useExpenses";
+import { useCreateExpense, useUpdateExpense } from "@/hooks/useExpenses";
 import type { CreateExpenseDtoCurrency } from "@/generated/api.schemas";
 
 interface Member {
   id: string;
   email: string;
+}
+
+interface ExpenseInitialValues {
+  title: string;
+  amount: number;
+  currency: string;
+  paidBy: string;
+  date: string | Date;
+  shares: { userId: string; amount: number }[];
 }
 
 interface ExpenseModalProps {
@@ -18,6 +27,9 @@ interface ExpenseModalProps {
   members: Member[];
   currentUserId: string;
   splitId: string;
+  mode: "create" | "edit";
+  expenseId?: string;
+  initialValues?: ExpenseInitialValues;
   onSuccess?: () => void;
   onError?: (message: string) => void;
 }
@@ -53,10 +65,15 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
   members,
   currentUserId,
   splitId,
+  mode,
+  expenseId,
+  initialValues,
   onSuccess,
   onError,
 }) => {
+  const isEdit = mode === "edit";
   const createExpense = useCreateExpense(splitId);
+  const updateExpense = useUpdateExpense(splitId);
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [paidBy, setPaidBy] = useState(currentUserId);
@@ -80,7 +97,23 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
   );
 
   useEffect(() => {
-    if (visible) {
+    if (!visible) return;
+
+    if (isEdit && initialValues) {
+      setTitle(initialValues.title);
+      const displayAmount = (initialValues.amount / 100).toFixed(2);
+      setAmount(displayAmount);
+      setPaidBy(initialValues.paidBy);
+      setDate(new Date(initialValues.date));
+      setCurrency(initialValues.currency as CurrencyValue);
+      setShares(
+        initialValues.shares.map((s) => ({
+          userId: s.userId,
+          amount: (s.amount / 100).toFixed(2),
+          locked: false,
+        })),
+      );
+    } else {
       setTitle("");
       setAmount("");
       setPaidBy(currentUserId);
@@ -88,7 +121,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
       setCurrency("GBP");
       initShares("");
     }
-  }, [visible, currentUserId, initShares]);
+  }, [visible, isEdit, initialValues, currentUserId, initShares]);
 
   const handleAmountChange = (text: string) => {
     const cleaned = text.replace(/[^0-9.]/g, "");
@@ -127,31 +160,33 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
   };
 
   const handleSave = () => {
-    createExpense.mutate(
-      {
-        splitId,
-        data: {
-          title,
-          amount: Math.round((parseFloat(amount) || 0) * 100),
-          paidBy,
-          date: date.toISOString(),
-          currency: currency as CreateExpenseDtoCurrency,
-          shares: shares.map((s) => ({
-            userId: s.userId,
-            amount: Math.round((parseFloat(s.amount) || 0) * 100),
-          })),
-        },
+    const payload = {
+      title,
+      amount: Math.round((parseFloat(amount) || 0) * 100),
+      paidBy,
+      date: date.toISOString(),
+      currency: currency as CreateExpenseDtoCurrency,
+      shares: shares.map((s) => ({
+        userId: s.userId,
+        amount: Math.round((parseFloat(s.amount) || 0) * 100),
+      })),
+    };
+
+    const callbacks = {
+      onSuccess: () => {
+        onDismiss();
+        onSuccess?.();
       },
-      {
-        onSuccess: () => {
-          onDismiss();
-          onSuccess?.();
-        },
-        onError: (error) => {
-          onError?.(error.response?.data?.message ?? "Failed to create expense");
-        },
+      onError: (error: { response?: { data?: { message?: string } } }) => {
+        onError?.(error.response?.data?.message ?? `Failed to ${isEdit ? "update" : "create"} expense`);
       },
-    );
+    };
+
+    if (isEdit && expenseId) {
+      updateExpense.mutate({ splitId, expenseId, data: payload }, callbacks);
+    } else {
+      createExpense.mutate({ splitId, data: payload }, callbacks);
+    }
   };
 
   const memberMap = useMemo(
@@ -175,7 +210,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
       >
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text variant="titleLarge" style={styles.title}>
-            Add Expense
+            {isEdit ? "Edit Expense" : "Add Expense"}
           </Text>
 
           <TextInput

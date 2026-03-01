@@ -341,6 +341,92 @@
           "expenses"
         ]
       }
+    },
+    "/api/splits/{splitId}/expenses/{id}": {
+      "patch": {
+        "operationId": "ExpensesController_update",
+        "parameters": [
+          {
+            "name": "splitId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateExpenseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update an expense",
+        "tags": [
+          "expenses"
+        ]
+      },
+      "delete": {
+        "operationId": "ExpensesController_delete",
+        "parameters": [
+          {
+            "name": "splitId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete an expense",
+        "tags": [
+          "expenses"
+        ]
+      }
     }
   },
   "info": {
@@ -630,6 +716,53 @@
         ]
       },
       "CreateExpenseDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Friday dinner",
+            "maxLength": 200
+          },
+          "amount": {
+            "type": "number",
+            "example": 1250,
+            "description": "Total amount in pence/cents"
+          },
+          "currency": {
+            "type": "string",
+            "example": "GBP",
+            "enum": [
+              "GBP",
+              "EUR",
+              "USD"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-03-01T12:00:00.000Z"
+          },
+          "paidBy": {
+            "type": "string",
+            "example": "clxyz123",
+            "description": "User ID of who paid"
+          },
+          "shares": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExpenseShareDto"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "amount",
+          "currency",
+          "date",
+          "paidBy",
+          "shares"
+        ]
+      },
+      "UpdateExpenseDto": {
         "type": "object",
         "properties": {
           "title": {

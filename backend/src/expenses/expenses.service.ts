@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserSafeException } from 'src/common/errors/useSafeError';
 import type { CreateExpenseDto } from './dto/create-expense.dto';
+import type { UpdateExpenseDto } from './dto/update-expense.dto';
 import type { ExpenseResponseDto } from './dto/expense-response.dto';
+import type { MessageResponseDto } from '../auth/dto/message-response.dto';
 import type { PaginatedExpensesResponseDto } from './dto/paginated-expenses-response.dto';
 
 @Injectable()
@@ -95,6 +97,96 @@ export class ExpensesService {
     });
 
     return this.toResponseDto(expense);
+  }
+
+  async update(
+    userId: string,
+    splitId: string,
+    expenseId: string,
+    dto: UpdateExpenseDto,
+  ): Promise<ExpenseResponseDto> {
+    const split = await this.prisma.split.findUnique({
+      where: { id: splitId },
+      include: { users: true },
+    });
+
+    if (!split || !split.users.some((u) => u.userId === userId))
+      throw new UserSafeException('Split not found');
+
+    const existing = await this.prisma.expense.findUnique({
+      where: { id: expenseId },
+    });
+
+    if (!existing || existing.splitId !== splitId)
+      throw new UserSafeException('Expense not found');
+
+    const memberIds = new Set(split.users.map((u) => u.userId));
+
+    if (!memberIds.has(dto.paidBy))
+      throw new UserSafeException('Paid-by user is not a member of this split');
+
+    for (const share of dto.shares) {
+      if (!memberIds.has(share.userId))
+        throw new UserSafeException(
+          `User ${share.userId} is not a member of this split`,
+        );
+    }
+
+    const sharesTotal = dto.shares.reduce((sum, s) => sum + s.amount, 0);
+    if (sharesTotal !== dto.amount)
+      throw new UserSafeException('Shares must sum to the total amount');
+
+    const expense = await this.prisma.$transaction(async (tx) => {
+      await tx.expenseShare.deleteMany({ where: { expenseId } });
+
+      return tx.expense.update({
+        where: { id: expenseId },
+        data: {
+          title: dto.title,
+          amount: dto.amount,
+          currency: dto.currency,
+          date: new Date(dto.date),
+          paidById: dto.paidBy,
+          shares: {
+            create: dto.shares.map((s) => ({
+              userId: s.userId,
+              amount: s.amount,
+            })),
+          },
+        },
+        include: {
+          paidBy: true,
+          shares: { include: { user: true } },
+        },
+      });
+    });
+
+    return this.toResponseDto(expense);
+  }
+
+  async delete(
+    userId: string,
+    splitId: string,
+    expenseId: string,
+  ): Promise<MessageResponseDto> {
+    const split = await this.prisma.split.findUnique({
+      where: { id: splitId },
+      include: { users: true },
+    });
+
+    if (!split || !split.users.some((u) => u.userId === userId))
+      throw new UserSafeException('Split not found');
+
+    const existing = await this.prisma.expense.findUnique({
+      where: { id: expenseId },
+    });
+
+    if (!existing || existing.splitId !== splitId)
+      throw new UserSafeException('Expense not found');
+
+    await this.prisma.expense.delete({ where: { id: expenseId } });
+
+    return { message: 'Expense deleted' };
   }
 
   private toResponseDto(expense: {
