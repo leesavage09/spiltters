@@ -14,6 +14,7 @@ import { NotificationResponseDto } from './dto/notification-response.dto';
 import { PaginatedNotificationsResponseDto } from './dto/paginated-notifications-response.dto';
 import { UnreadCountResponseDto } from './dto/unread-count-response.dto';
 import { NotificationsService } from './notifications.service';
+import { parsePagination } from '../common/pagination';
 
 @ApiTags('notifications')
 @Controller('notifications')
@@ -31,10 +32,11 @@ export class NotificationsController {
     @Query('skip') skip?: string,
     @Query('take') take?: string,
   ): Promise<PaginatedNotificationsResponseDto> {
+    const pagination = parsePagination(skip, take);
     return this.notificationsService.findAllByUser(
       req.user.id,
-      parseInt(skip || '0', 10),
-      parseInt(take || '20', 10),
+      pagination.skip,
+      pagination.take,
     );
   }
 

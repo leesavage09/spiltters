@@ -25,6 +25,7 @@ import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { ExpenseResponseDto } from './dto/expense-response.dto';
 import { PaginatedExpensesResponseDto } from './dto/paginated-expenses-response.dto';
 import { ExpensesService } from './expenses.service';
+import { parsePagination } from '../common/pagination';
 
 @ApiTags('expenses')
 @Controller('splits/:splitId/expenses')
@@ -43,11 +44,12 @@ export class ExpensesController {
     @Query('skip') skip?: string,
     @Query('take') take?: string,
   ): Promise<PaginatedExpensesResponseDto> {
+    const pagination = parsePagination(skip, take);
     return this.expensesService.findBySplit(
       req.user.id,
       splitId,
-      parseInt(skip || '0', 10),
-      parseInt(take || '20', 10),
+      pagination.skip,
+      pagination.take,
     );
   }
 
