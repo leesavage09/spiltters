@@ -1,0 +1,14 @@
+{
+  "name": "@splitters/domain",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "typescript": "~5.7.3"
+  }
+}
