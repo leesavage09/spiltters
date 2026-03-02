@@ -14,9 +14,12 @@
     "@expo/metro-runtime": "~6.1.2",
     "@react-navigation/native": "^7.1.0",
     "@react-navigation/native-stack": "^7.3.0",
+    "@splitters/domain": "*",
     "@tanstack/react-query": "^5.90.0",
     "axios": "^1.13.0",
+    "drizzle-orm": "^0.45.1",
     "expo": "^54.0.33",
+    "expo-sqlite": "~16.0.10",
     "expo-status-bar": "~3.0.9",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -27,12 +30,13 @@
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
     "react-native-vector-icons": "^10.2.0",
-    "react-native-web": "^0.21.2",
-    "@splitters/domain": "*"
+    "react-native-web": "^0.21.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.0",
     "@types/react": "~19.1.10",
+    "@types/react-native": "^0.72.8",
+    "drizzle-kit": "^0.31.9",
     "orval": "^8.5.0",
     "typescript": "~5.9.2"
   },

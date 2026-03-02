@@ -8,6 +8,7 @@ import AppNavigator from "./src/navigation/AppNavigator";
 import { navigationRef } from "./src/navigation/navigationRef";
 import theme from "./src/theme/theme";
 import { SnackbarProvider } from "./src/components/ui/snackbar/snackbar";
+import { DatabaseProvider } from "./src/db/DatabaseProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,16 +21,18 @@ const queryClient = new QueryClient({
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <PaperProvider theme={theme}>
-        <SnackbarProvider>
-          <SafeAreaProvider>
-            <NavigationContainer ref={navigationRef}>
-              <StatusBar style="light" />
-              <AppNavigator />
-            </NavigationContainer>
-          </SafeAreaProvider>
-        </SnackbarProvider>
-      </PaperProvider>
+      <DatabaseProvider>
+        <PaperProvider theme={theme}>
+          <SnackbarProvider>
+            <SafeAreaProvider>
+              <NavigationContainer ref={navigationRef}>
+                <StatusBar style="light" />
+                <AppNavigator />
+              </NavigationContainer>
+            </SafeAreaProvider>
+          </SnackbarProvider>
+        </PaperProvider>
+      </DatabaseProvider>
     </QueryClientProvider>
   );
 };
